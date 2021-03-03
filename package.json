@@ -1,0 +1,33 @@
+{
+  "name": "my-webpack-project",
+  "version": "1.0.0",
+  "description": "My webpack project",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest",
+    "build": "webpack",
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/danilaprokoshev/frontend-project-lvl3.git"
+  },
+  "author": "danila.p",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/danilaprokoshev/frontend-project-lvl3/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/danilaprokoshev/frontend-project-lvl3#readme",
+  "devDependencies": {
+    "@webpack-cli/init": "^1.1.3",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "webpack": "^5.24.2",
+    "webpack-cli": "^4.5.0",
+    "webpack-dev-server": "^3.11.2",
+    "workbox-webpack-plugin": "^6.1.1"
+  }
+}

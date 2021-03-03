@@ -1,0 +1,30 @@
+{
+  "@hexlet/code": {
+    "configuration": {
+      "config": {
+        "configName": "config",
+        "topScope": [
+          "const path = require('path');",
+          "const webpack = require('webpack');",
+          "\n",
+          "const WorkboxWebpackPlugin = require('workbox-webpack-plugin');",
+          "\n"
+        ],
+        "webpackOptions": {
+          "mode": "'production'",
+          "plugins": [
+            "new webpack.ProgressPlugin()",
+            "new WorkboxWebpackPlugin.GenerateSW({\n\t\t\t\tswDest: 'sw.js',\n\t\t\t\tclientsClaim: true,\n\t\t\t\tskipWaiting: false,\n\t\t\t})"
+          ],
+          "module": {
+            "rules": []
+          },
+          "devServer": {
+            "open": true,
+            "host": "'localhost'"
+          }
+        }
+      }
+    }
+  }
+}
