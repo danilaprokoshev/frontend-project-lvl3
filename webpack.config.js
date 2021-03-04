@@ -1,29 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
-
-
-
-
-const WorkboxWebpackPlugin = require('workbox-webpack-plugin');
-
-
-
 
 module.exports = {
-  mode: 'production',
-
-  plugins: [new webpack.ProgressPlugin(), new WorkboxWebpackPlugin.GenerateSW({
-          swDest: 'sw.js',
-          clientsClaim: true,
-          skipWaiting: false,
-        })],
-
-  module: {
-    rules: []
+  mode: process.env.NODE_ENV || 'development',
+  entry: './src/index.js',
+  output: {
+    filename: 'main.js',
+    path: path.resolve(__dirname, 'dist'),
   },
-
-  devServer: {
-    open: true,
-    host: 'localhost'
-  }
-}
+};
