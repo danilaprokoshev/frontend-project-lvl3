@@ -1,7 +1,12 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 
 module.exports = {
-  mode: process.env.NODE_ENV || 'development',
+  entry: './src/init.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'main.js',
+  },
   module: {
     rules: [
       {
@@ -15,8 +20,8 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader'
-        ]
+          'css-loader',
+        ],
       },
     ],
   },
@@ -25,4 +30,5 @@ module.exports = {
       template: 'template.html',
     }),
   ],
+  mode: process.env.NODE_ENV || 'development',
 };
