@@ -119,11 +119,11 @@ export default () => {
       const domparser = new DOMParser();
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
         .then((response) => {
-          const stringContainingXMLSource = response.data.contents;
-          const doc = domparser.parseFromString(stringContainingXMLSource, 'text/html');
+          const XMLSource = response.data.contents;
+          const doc = domparser.parseFromString(XMLSource, 'text/xml');
           const title = doc.querySelector('title');
           const description = doc.querySelector('description');
-          console.log(title.textContent, description);
+          console.log(title.textContent, description.textContent);
           console.log(doc);
         })
         .catch((error) => {
