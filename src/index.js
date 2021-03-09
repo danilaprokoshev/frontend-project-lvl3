@@ -1,40 +1,45 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
 import _ from 'lodash';
-import onChange from 'on-change';
 import axios from 'axios';
+import parseXML from './parser.js';
+import watchState from '../view/watchers.js';
 
 const schema = yup.object().shape({
   url: yup.string().required('Fill out this field').url('Ссылка должна быть валидным URL'),
 });
 
-const validate = (fieldElement) => {
+const validate = (field) => {
   try {
-    schema.validateSync(fieldElement, { abortEarly: false });
+    schema.validateSync(field, { abortEarly: false });
     return {};
   } catch (e) {
     return _.keyBy(e.inner, 'path');
   }
 };
 
-const renderErrors = (field, errors) => {
-  const element = field.url;
-  const error = errors.url;
-  if (!error) {
-    element.classList.remove('is-invalid');
-    return;
+const checkInFeedList = (watchedState) => {
+  if (!watchedState.form.feedsList.includes(watchedState.form.field.url)) {
+    watchedState.form.feedsList.unshift(watchedState.form.field.url);
+    return {};
   }
-  element.classList.add('is-invalid');
+  return {
+    url: {
+      message: 'RSS уже добавлен',
+    },
+  };
 };
 
 export default () => {
   const state = {
     form: {
       processState: 'filling', // TODO: 2. 'processed', 3. 'failed'. Также, что делать с изменением этого стейта, как реагировать, когда изменять?
-      processError: null, // TODO: включить изменение состояния при ошибках сети и реакцию на изменение
+      processError: null, // TODO: включить изменение состояния
+      // при ошибках сети и реакцию на изменение
       field: {
         url: '',
       },
+      feedsList: [],
       feeds: [],
       valid: true,
       errors: {}, // TODO: maybe just string instead object
@@ -66,47 +71,17 @@ export default () => {
   row.appendChild(colMd10);
   container.appendChild(row);
 
-  const fieldElement = {
-    url: document.querySelector('input'),
-  };
-
-  const watchedState = onChange(state, (path, value) => { // TODO: вынести в отдельный модуль View (use class View?)
-    switch (path) {
-      case 'form.processState':
-        break;
-      case 'form.valid':
-        break;
-      case 'form.errors':
-        renderErrors(fieldElement, value);
-        break;
-      case 'form.feeds':
-        form.reset();
-        break;
-      default:
-        break;
-    }
-  });
-
-  const checkInFeedList = (url) => {
-    if (!watchedState.form.feeds.includes(url)) {
-      watchedState.form.feeds.push(url);
-      return {};
-    }
-    return {
-      url: {
-        message: 'RSS уже добавлен',
-      },
-    };
-  };
+  const watchedState = watchState(state, document.body);
 
   const updateValidationState = () => {
     let errors;
     errors = validate(watchedState.form.field);
     if (_.isEqual(errors, {})) {
-      errors = checkInFeedList(watchedState.form.field.url);
+      errors = checkInFeedList(watchedState);
     }
     watchedState.form.valid = _.isEqual(errors, {});
     watchedState.form.errors = errors;
+    console.log(watchedState);
   };
 
   form.addEventListener('submit', (e) => {
@@ -116,18 +91,21 @@ export default () => {
     updateValidationState();
     if (watchedState.form.valid) {
       const url = new URL(watchedState.form.field.url);
-      const domparser = new DOMParser();
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
         .then((response) => {
-          const XMLSource = response.data.contents;
-          const doc = domparser.parseFromString(XMLSource, 'text/xml');
-          const title = doc.querySelector('title');
-          const description = doc.querySelector('description');
-          console.log(title.textContent, description.textContent);
-          console.log(doc);
+          console.log(response);
+          if (response.status === 200) return response;
+          throw new Error('Network response was not ok.');
+        })
+        .then((response) => {
+          const { contents } = response.data;
+          const feedContent = parseXML(contents);
+          feedContent.id = _.uniqueId();
+          watchedState.form.feeds.unshift(feedContent);
         })
         .catch((error) => {
-          console.log(error);
+          watchedState.form.processError = error.message;
+          watchedState.form.processState = 'failed';
         });
     }
   });
