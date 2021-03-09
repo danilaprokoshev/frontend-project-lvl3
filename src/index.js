@@ -81,7 +81,6 @@ export default () => {
     }
     watchedState.form.valid = _.isEqual(errors, {});
     watchedState.form.errors = errors;
-    console.log(watchedState);
   };
 
   form.addEventListener('submit', (e) => {
@@ -93,7 +92,6 @@ export default () => {
       const url = new URL(watchedState.form.field.url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
         .then((response) => {
-          console.log(response);
           if (response.status === 200) return response;
           throw new Error('Network response was not ok.');
         })
