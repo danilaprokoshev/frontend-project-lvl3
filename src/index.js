@@ -2,8 +2,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
 import _ from 'lodash';
 import axios from 'axios';
+import i18n from 'i18next';
 import parseXML from './parser.js';
 import watchState from '../view/watchers.js';
+import en from './locales/en.js';
+import ru from './locales/ru.js';
 
 const schema = yup.object().shape({
   url: yup.string().required('Fill out this field').url('Ссылка должна быть валидным URL'),
@@ -31,6 +34,18 @@ const checkInFeedList = (watchedState) => {
 };
 
 export default () => {
+  const defaultLanguage = 'ru';
+  i18n.init({
+    lng: defaultLanguage,
+    debug: false,
+    resources: {
+      en,
+      ru,
+    },
+  }).then(() => {
+    // TODO: что сделать в коллбеке...
+  });
+
   const state = {
     form: {
       processState: 'filling', // TODO: 2. 'processed', 3. 'failed'. Также, что делать с изменением этого стейта, как реагировать, когда изменять?
@@ -63,7 +78,7 @@ export default () => {
     <input autofocus="" required name="url" aria-label="url" class="form-control form-control-lg w-100" placeholder="ссылка RSS">
   </div>
   <div class="col-auto">
-    <button type="submit" aria-label="add" class="btn btn-lg btn-primary px-sm-5">Add</button>
+    <button type="submit" aria-label="add" class="btn btn-lg btn-primary px-sm-5">${i18n.t('add')}</button>
   </div>
 </div>`;
 
