@@ -3,5 +3,12 @@ export default {
     add: 'Add',
     feeds: 'Feeds',
     posts: 'Posts',
+    form: {
+      validation: {
+        empty_field: 'Fill out this field',
+        invalid_url: 'url must be valid URL',
+        already_added_rss: 'RSS is already added',
+      },
+    },
   },
 };
