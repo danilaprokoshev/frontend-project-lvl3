@@ -98,11 +98,31 @@ export default () => {
   const updateValidationState = () => {
     let errors;
     errors = validate(watchedState.form.field);
-    if (_.isEqual(errors, {})) {
+    if (_.isEqual(errors, {})) { // TODO: оптимизировать проверку, есть дублирование isEqual
       errors = checkInFeedList(watchedState);
     }
     watchedState.form.valid = _.isEqual(errors, {});
     watchedState.form.errors = errors;
+  };
+
+  const f = () => {
+    const promises = watchedState.form.feeds.map((feed) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(feed.url)}`)
+      .then((response) => {
+        if (response.status === 200) return response;
+        throw new Error('Network response was not ok.');
+      })
+      .catch((error) => {
+        watchedState.form.processError = error.message;
+        watchedState.form.processState = 'failed';
+      }));
+    const promise = Promise.all(promises);
+    return promise.then((responses) => responses.forEach((response, i) => {
+      const { contents } = response.data;
+      const feedContent = parseXML(contents);
+      const newItems = _.differenceBy(feedContent.items, watchedState.form.feeds[i].items, 'title');
+      watchedState.form.feeds[i].items = newItems.concat(watchedState.form.feeds[i].items);
+      console.log(watchedState);
+    }));
   };
 
   form.addEventListener('submit', (e) => {
@@ -110,7 +130,6 @@ export default () => {
     const formData = new FormData(e.target);
     watchedState.form.field = Object.fromEntries(formData);
     updateValidationState();
-    console.log(watchedState);
     if (watchedState.form.valid) {
       const url = new URL(watchedState.form.field.url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
@@ -121,8 +140,10 @@ export default () => {
         .then((response) => {
           const { contents } = response.data;
           const feedContent = parseXML(contents);
+          feedContent.url = url.href;
           feedContent.id = _.uniqueId();
           watchedState.form.feeds.unshift(feedContent);
+          setTimeout(() => f(), 61000);
         })
         .catch((error) => {
           watchedState.form.processError = error.message;
