@@ -63,6 +63,7 @@ export default () => {
       },
       feedsList: [],
       feeds: [],
+      posts: [],
       valid: true,
       errors: {}, // TODO: maybe just string instead object
     },
@@ -105,8 +106,8 @@ export default () => {
     watchedState.form.errors = errors;
   };
 
-  const f = () => {
-    const promises = watchedState.form.feeds.map((feed) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(feed.url)}`)
+  const f = () => { // TODO: rename func
+    const promises = watchedState.form.feeds.map((feed) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
       .then((response) => {
         if (response.status === 200) return response;
         throw new Error('Network response was not ok.');
@@ -116,23 +117,24 @@ export default () => {
         watchedState.form.processState = 'failed';
       }));
     const promise = Promise.all(promises);
-    return promise.then((responses) => responses.forEach((response, i) => {
+    return promise.then((responses) => responses.forEach((response) => {
       const { contents } = response.data;
       const feedContent = parseXML(contents);
-      const newItems = _.differenceBy(feedContent.items, watchedState.form.feeds[i].items, 'title');
-      watchedState.form.feeds[i].items = newItems.concat(watchedState.form.feeds[i].items);
-      console.log(watchedState);
+      const newItems = _.differenceBy(feedContent.posts, watchedState.form.posts, 'title');
+      watchedState.form.posts = newItems.concat(watchedState.form.posts);
+      setTimeout(() => f(), 5000);
     }));
   };
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    watchedState.form.field = Object.fromEntries(formData);
+    watchedState.form.field = Object.fromEntries(formData); // TODO: подумать,
+    // как очищать поле с url
     updateValidationState();
     if (watchedState.form.valid) {
       const url = new URL(watchedState.form.field.url);
-      axios.get(`https://hexlet-allorigins.herokuapp.com/get?url=${encodeURIComponent(url)}`)
+      axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
           if (response.status === 200) return response;
           throw new Error('Network response was not ok.');
@@ -140,10 +142,14 @@ export default () => {
         .then((response) => {
           const { contents } = response.data;
           const feedContent = parseXML(contents);
-          feedContent.url = url.href;
-          feedContent.id = _.uniqueId();
-          watchedState.form.feeds.unshift(feedContent);
-          setTimeout(() => f(), 61000);
+          const feedId = _.uniqueId();
+          feedContent.feed.feedId = feedId;
+          feedContent.feed.url = url.href;
+          feedContent.posts.forEach((post) => _.set(post, 'feedId', feedId));
+          watchedState.form.feeds.unshift(feedContent.feed);
+          watchedState.form.posts = feedContent.posts.concat(watchedState.form.posts);
+          console.log(watchedState);
+          setTimeout(() => f(), 5000);
         })
         .catch((error) => {
           watchedState.form.processError = error.message;
