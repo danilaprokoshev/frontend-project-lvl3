@@ -47,13 +47,11 @@ const renderFeeds = (body, watchedState) => {
   postsCol.appendChild(postsH2);
   const postsUl = document.createElement('ul');
   postsUl.classList.add('list-group');
-  watchedState.form.feeds.forEach((feed) => {
-    feed.items.forEach((item) => {
-      const li = document.createElement('li');
-      li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
-      li.innerHTML = `<a href="${item.link}">${item.title}</a>`;
-      postsUl.appendChild(li);
-    });
+  watchedState.form.posts.forEach((post) => {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
+    li.innerHTML = `<a href="${post.link}">${post.title}</a>`;
+    postsUl.appendChild(li);
   });
   postsCol.appendChild(postsUl);
   postsRow.appendChild(postsCol);
@@ -78,7 +76,7 @@ export default (state, body) => {
       case 'form.feedsList':
         form.reset();
         break;
-      case 'form.feeds':
+      case 'form.posts': // TODO: разбить рендеры отдельно на фиды и посты
         renderFeeds(body, watchedState);
         break;
       default:
