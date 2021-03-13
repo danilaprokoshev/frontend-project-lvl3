@@ -8,6 +8,8 @@ import watchState from '../view/watchers.js';
 import en from './locales/en.js';
 import ru from './locales/ru.js';
 
+//const getUniqueId = () => _.uniqueId();
+
 export default () => {
   const defaultLanguage = 'ru';
   i18n.init({
@@ -106,7 +108,7 @@ export default () => {
     watchedState.form.errors = errors;
   };
 
-  const f = () => { // TODO: rename func
+  const updatePosts = () => { // TODO: rename func
     const promises = watchedState.form.feeds.map((feed) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
       .then((response) => {
         if (response.status === 200) return response;
@@ -120,9 +122,10 @@ export default () => {
     return promise.then((responses) => responses.forEach((response) => {
       const { contents } = response.data;
       const feedContent = parseXML(contents);
-      const newItems = _.differenceBy(feedContent.posts, watchedState.form.posts, 'title');
-      watchedState.form.posts = newItems.concat(watchedState.form.posts);
-      setTimeout(() => f(), 5000);
+      const newPosts = _.differenceBy(feedContent.posts, watchedState.form.posts, 'title');
+      _.forEachRight(newPosts,(post) => _.set(post, 'dataId', _.uniqueId()));
+      watchedState.form.posts = newPosts.concat(watchedState.form.posts);
+      setTimeout(updatePosts.bind(null), 5000);
     }));
   };
 
@@ -142,14 +145,15 @@ export default () => {
         .then((response) => {
           const { contents } = response.data;
           const feedContent = parseXML(contents);
-          const feedId = _.uniqueId();
-          feedContent.feed.feedId = feedId;
           feedContent.feed.url = url.href;
-          feedContent.posts.forEach((post) => _.set(post, 'feedId', feedId));
+          _.forEachRight(feedContent.posts,(post) => {
+            _.set(post, 'dataId', _.uniqueId())
+            _.set(post, 'viewed', false);
+          });
           watchedState.form.feeds.unshift(feedContent.feed);
           watchedState.form.posts = feedContent.posts.concat(watchedState.form.posts);
           console.log(watchedState);
-          setTimeout(() => f(), 5000);
+          setTimeout(updatePosts.bind(null), 5000);
         })
         .catch((error) => {
           watchedState.form.processError = error.message;
