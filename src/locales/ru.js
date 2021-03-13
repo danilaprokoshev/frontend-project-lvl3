@@ -14,7 +14,7 @@ export default {
       validation: {
         empty_field: 'Поле обязательно для заполнения',
         invalid_url: 'Ссылка должна быть валидным URL',
-        already_added_rss: 'RSS уже добавлен',
+        already_added_rss: 'RSS уже существует',
         invalid_rss: 'Ресурс не содержит валидный RSS',
       },
       network_error: 'Ошибка сети',
