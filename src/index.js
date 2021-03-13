@@ -8,8 +8,6 @@ import watchState from '../view/watchers.js';
 import en from './locales/en.js';
 import ru from './locales/ru.js';
 
-//const getUniqueId = () => _.uniqueId();
-
 export default () => {
   const defaultLanguage = 'ru';
   i18n.init({
@@ -123,7 +121,7 @@ export default () => {
       const { contents } = response.data;
       const feedContent = parseXML(contents);
       const newPosts = _.differenceBy(feedContent.posts, watchedState.form.posts, 'title');
-      _.forEachRight(newPosts,(post) => _.set(post, 'dataId', _.uniqueId()));
+      _.forEachRight(newPosts, (post) => _.set(post, 'dataId', _.uniqueId()));
       watchedState.form.posts = newPosts.concat(watchedState.form.posts);
       setTimeout(updatePosts.bind(null), 5000);
     }));
@@ -146,8 +144,8 @@ export default () => {
           const { contents } = response.data;
           const feedContent = parseXML(contents);
           feedContent.feed.url = url.href;
-          _.forEachRight(feedContent.posts,(post) => {
-            _.set(post, 'dataId', _.uniqueId())
+          _.forEachRight(feedContent.posts, (post) => {
+            _.set(post, 'dataId', _.uniqueId());
             _.set(post, 'viewed', false);
           });
           watchedState.form.feeds.unshift(feedContent.feed);
