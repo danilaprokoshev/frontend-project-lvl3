@@ -6,8 +6,9 @@ export default class Example {
   }
 
   init() {
-    this.element.classList.add('d-flex', 'flex-column', 'min-vh-100');
-    this.element.innerHTML = `<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+    const body = this.element.closest('body');
+    body.classList.add('d-flex', 'flex-column', 'min-vh-100');
+    body.innerHTML = `<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
