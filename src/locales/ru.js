@@ -3,6 +3,7 @@ export default {
     add: 'Добавить',
     feeds: 'Фиды',
     posts: 'Посты',
+    view: 'Просмотр',
     form: {
       validation: {
         empty_field: 'Поле обязательно для заполнения',

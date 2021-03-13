@@ -3,6 +3,7 @@ export default {
     add: 'Add',
     feeds: 'Feeds',
     posts: 'Posts',
+    view: 'View',
     form: {
       validation: {
         empty_field: 'Fill out this field',
