@@ -1,57 +1,64 @@
 import onChange from 'on-change';
 import i18n from 'i18next';
 
-const renderErrors = (body, errors) => { // TODO: maybe error, not errors
-  const inputEl = body.querySelector('input');
-  const error = errors.url;
-  if (!error) {
+const renderFormError = (inputEl, feedbackEl, error) => {
+  if (!error.url) {
     inputEl.classList.remove('is-invalid');
+    feedbackEl.innerHTML = ''; // eslint-disable-line
     return;
   }
   inputEl.classList.add('is-invalid');
+  feedbackEl.classList.add('text-danger');
+  feedbackEl.textContent = error.url.message; // eslint-disable-line
 };
 
-const renderFeeds = (body, watchedState) => { // TODO: разбить на 2 функции (фиды и посты)
-  let container;
-  container = document.querySelector('section.container-fluid.p-5:not(.bg-dark)');
-  if (container) {
-    container.remove();
-  }
-  container = document.createElement('section');
-  container.classList.add('container-fluid', 'p-5');
-  const feedsRow = document.createElement('div');
-  feedsRow.classList.add('row');
-  const feedsCol = document.createElement('div');
-  feedsCol.classList.add('col-md-10', 'col-lg-8', 'mx-auto', 'feeds');
-  const feedsH2 = document.createElement('h2');
-  feedsH2.textContent = i18n.t('feeds');
-  feedsCol.appendChild(feedsH2);
-  const feedsUl = document.createElement('ul');
-  feedsUl.classList.add('list-group', 'mb-5');
-  watchedState.form.feeds.forEach((feed) => {
-    const li = document.createElement('li');
-    li.classList.add('list-group-item');
-    li.innerHTML = `<h3>${feed.title}</h3>
-<p>${feed.description}</p>`;
-    feedsUl.appendChild(li);
-  });
-  feedsCol.appendChild(feedsUl);
-  feedsRow.appendChild(feedsCol);
+const renderProcessError = (inputEl, feedbackEl, error) => {
+  inputEl.classList.remove('is-invalid');
+  feedbackEl.classList.add('text-danger');
+  feedbackEl.textContent = error; // eslint-disable-line
+};
 
-  const postsRow = document.createElement('div');
-  postsRow.classList.add('row');
-  const postsCol = document.createElement('div');
-  postsCol.classList.add('col-md-10', 'col-lg-8', 'mx-auto', 'posts');
-  const postsH2 = document.createElement('h2');
-  postsH2.textContent = i18n.t('posts');
-  postsCol.appendChild(postsH2);
-  const postsUl = document.createElement('ul');
-  postsUl.classList.add('list-group');
-  watchedState.form.posts.forEach((post) => {
-    const li = document.createElement('li');
-    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
+const renderSuccessFeedback = (inputEl, feedbackEl) => {
+  inputEl.classList.remove('is-invalid');
+  feedbackEl.classList.remove('text-danger');
+  feedbackEl.classList.add('text-success');
+  feedbackEl.textContent = i18n.t('form.success_feedback'); // eslint-disable-line
+};
+
+const renderFeeds = (body, watchedState) => {
+  const feedsColumn = body.querySelector('.feeds');
+  feedsColumn.innerHTML = '';
+  const feedsTitle = document.createElement('h2');
+  feedsTitle.textContent = i18n.t('feeds');
+  const feedsUlEl = document.createElement('ul');
+  feedsUlEl.classList.add('list-group', 'mb-5');
+  watchedState.feeds.forEach((feed) => {
+    const liEl = document.createElement('li');
+    liEl.classList.add('list-group-item');
+    liEl.innerHTML = `<h3>${feed.title}</h3>
+<p>${feed.description}</p>`;
+    feedsUlEl.appendChild(liEl);
+  });
+  feedsColumn.appendChild(feedsTitle);
+  feedsColumn.appendChild(feedsUlEl);
+};
+
+const renderPosts = (body, watchedState) => {
+  const postsColumn = body.querySelector('.posts');
+  postsColumn.innerHTML = '';
+  const postsTitle = document.createElement('h2');
+  postsTitle.textContent = i18n.t('posts');
+  const postsUlEl = document.createElement('ul');
+  postsUlEl.classList.add('list-group');
+  watchedState.posts.forEach((post) => {
+    const liEl = document.createElement('li');
+    liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
-    aEl.classList.add('fw-bold');
+    if (post.viewed) {
+      aEl.classList.add('fw-normal');
+    } else {
+      aEl.classList.add('fw-bold');
+    }
     aEl.setAttribute('href', post.link);
     aEl.dataset.id = post.dataId;
     aEl.setAttribute('target', '_blank');
@@ -63,35 +70,90 @@ const renderFeeds = (body, watchedState) => { // TODO: разбить на 2 ф�
     button.dataset.toggle = 'modal';
     button.dataset.target = '#modal';
     button.textContent = i18n.t('view');
-    li.appendChild(aEl);
-    li.appendChild(button);
-    postsUl.appendChild(li);
+    liEl.appendChild(aEl);
+    liEl.appendChild(button);
+    postsUlEl.appendChild(liEl);
   });
-  postsCol.appendChild(postsUl);
-  postsRow.appendChild(postsCol);
+  postsColumn.appendChild(postsTitle);
+  postsColumn.appendChild(postsUlEl);
 
-  container.appendChild(feedsRow);
-  container.appendChild(postsRow);
+  const aElements = postsUlEl.querySelectorAll('a');
+  aElements.forEach((aEl) => {
+    aEl.addEventListener('click', () => {
+      const { id } = aEl.dataset;
+      const post = watchedState.posts.find((el) => el.dataId === id);
+      post.viewed = true;
+    });
+  });
 
-  body.appendChild(container);
+  const buttons = postsUlEl.querySelectorAll('button');
+  const modal = body.querySelector('#modal');
+  const modalTitle = modal.querySelector('.modal-title');
+  const modalBody = modal.querySelector('.modal-body');
+  const modalReadFullArticle = modal.querySelector('.full-article');
+  const backdropEl = document.createElement('div');
+  buttons.forEach((button) => {
+    button.addEventListener('click', () => { // TODO: вынести в отдельную функцию
+      const { id } = button.dataset;
+      const post = watchedState.posts.find((el) => el.dataId === id);
+      post.viewed = true;
+
+      modal.classList.add('show');
+      modal.style.display = 'block';
+      modalTitle.textContent = post.title;
+      const closeButtons = modal.querySelectorAll('[data-dismiss="modal"]');
+      closeButtons.forEach((closeButton) => {
+        closeButton.addEventListener('click', () => { // TODO: вынести в отдельную фунцкцию
+          modal.classList.remove('show');
+          modal.style.display = 'none';
+          backdropEl.remove();
+          body.classList.remove('modal-open');
+        });
+      });
+      modalBody.textContent = post.description;
+      modalReadFullArticle.href = post.link;
+      backdropEl.classList.add('modal-backdrop', 'fade', 'show');
+      body.appendChild(backdropEl);
+      body.classList.add('modal-open');
+    });
+  });
 };
 
 export default (state, body) => {
   const form = body.querySelector('.rss-form');
+  const inputEl = body.querySelector('input');
+  const feedbackEl = body.querySelector('.feedback');
+  const submitButton = body.querySelector('[type="submit"]');
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
-      case 'form.processState':
+      case 'processState':
+        if (value === 'sending') {
+          submitButton.setAttribute('disabled', 'true');
+          break;
+        }
+        if (value === 'processed') {
+          submitButton.removeAttribute('disabled');
+          break;
+        }
+        if (value === 'failed') {
+          submitButton.removeAttribute('disabled');
+          renderProcessError(inputEl, feedbackEl, watchedState.processError);
+          break;
+        }
         break;
-      case 'form.valid':
+      case 'form.error':
+        renderFormError(inputEl, feedbackEl, value);
         break;
-      case 'form.errors':
-        renderErrors(body, value);
+      case 'processError':
+        renderProcessError(inputEl, feedbackEl, value);
         break;
-      case 'form.feedsList':
+      case 'feeds':
+        renderFeeds(body, watchedState);
+        renderSuccessFeedback(inputEl, feedbackEl);
         form.reset();
         break;
-      case 'form.posts': // TODO: разбить рендеры отдельно на фиды и посты
-        renderFeeds(body, watchedState);
+      case 'posts':
+        renderPosts(body, watchedState);
         break;
       default:
         break;
