@@ -27,7 +27,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: 'template.html',
+      template: 'index.html',
     }),
   ],
   mode: process.env.NODE_ENV || 'development',
