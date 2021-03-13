@@ -19,7 +19,7 @@ export default () => {
     },
   });
 
-  const element = document.body;
+  const element = document.getElementById('point');
   const obj = new Example(element);
   obj.init();
 
@@ -98,7 +98,7 @@ export default () => {
     }));
   };
 
-  const form = element.querySelector('.rss-form');
+  const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
