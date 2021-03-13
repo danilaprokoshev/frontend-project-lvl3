@@ -1,6 +1,6 @@
 export default (xml) => {
   const domparser = new DOMParser();
-  const doc = domparser.parseFromString(xml, 'text/xml');
+  const doc = domparser.parseFromString(xml, 'text/html');
   const title = doc.querySelector('title');
   const description = doc.querySelector('description');
   const items = doc.getElementsByTagName('item');
