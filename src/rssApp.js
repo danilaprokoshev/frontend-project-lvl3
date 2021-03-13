@@ -9,7 +9,7 @@ import watchState from '../view/watchers.js';
 import parseXML from './parser.js';
 
 export default () => {
-  const defaultLanguage = 'en';
+  const defaultLanguage = 'ru';
   i18n.init({
     lng: defaultLanguage,
     debug: false,
