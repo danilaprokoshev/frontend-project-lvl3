@@ -11,7 +11,7 @@ const renderErrors = (body, errors) => { // TODO: maybe error, not errors
   inputEl.classList.add('is-invalid');
 };
 
-const renderFeeds = (body, watchedState) => {
+const renderFeeds = (body, watchedState) => { // TODO: разбить на 2 функции (фиды и посты)
   let container;
   container = document.querySelector('section.container-fluid.p-5:not(.bg-dark)');
   if (container) {
@@ -50,7 +50,21 @@ const renderFeeds = (body, watchedState) => {
   watchedState.form.posts.forEach((post) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
-    li.innerHTML = `<a href="${post.link}">${post.title}</a>`;
+    const aEl = document.createElement('a');
+    aEl.classList.add('fw-bold');
+    aEl.setAttribute('href', post.link);
+    aEl.dataset.id = post.dataId;
+    aEl.setAttribute('target', '_blank');
+    aEl.setAttribute('rel', 'noopener noreferrer');
+    aEl.textContent = post.title;
+    const button = document.createElement('button');
+    button.classList.add('btn', 'btn-primary', 'btn-sm');
+    button.dataset.id = post.dataId;
+    button.dataset.toggle = 'modal';
+    button.dataset.target = '#modal';
+    button.textContent = i18n.t('view');
+    li.appendChild(aEl);
+    li.appendChild(button);
     postsUl.appendChild(li);
   });
   postsCol.appendChild(postsUl);
