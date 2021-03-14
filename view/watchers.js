@@ -98,7 +98,7 @@ const renderPosts = (body, watchedState) => {
       const { id } = button.dataset;
       const post = watchedState.posts.find((el) => el.dataId === id);
       post.viewed = true;
-
+      renderPosts(body, watchedState);
       modal.classList.add('show');
       modal.style.display = 'block';
       modalTitle.textContent = post.title;
