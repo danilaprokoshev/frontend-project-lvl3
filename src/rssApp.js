@@ -127,7 +127,8 @@ export default () => {
               watchedState.processError = i18n.t('form.validation.invalid_rss');
               break;
             default:
-              console.log(`Unhandled error: ${error}`);
+              watchedState.processError = i18n.t('form.validation.invalid_rss');
+              // console.log(`Unhandled error: ${error}`);
               break;
           }
           watchedState.processState = 'failed';
