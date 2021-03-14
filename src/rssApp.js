@@ -122,18 +122,19 @@ export default () => {
           setTimeout(updatePosts, 5000);
         })
         .catch((error) => {
-          watchedState.processState = 'failed';
           switch (error.message) {
             case 'Network Error':
               watchedState.processError = i18n.t('form.network_error');
               break;
             case 'Error parsing XML':
               watchedState.processError = i18n.t('form.validation.invalid_rss');
+              console.log(watchedState);
               break;
             default:
               console.log(`Unhandled error: ${error}`);
               break;
           }
+          watchedState.processState = 'failed';
         });
     }
   });
