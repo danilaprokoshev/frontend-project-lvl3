@@ -106,6 +106,10 @@ export default () => {
       const url = new URL(formField.url);
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
+          if (response.status === 200) return response;
+          throw new Error('Network Error');
+        })
+        .then((response) => {
           const { contents } = response.data;
           const feedContent = parseXML(contents);
           feedContent.feed.url = url.href;
@@ -123,12 +127,8 @@ export default () => {
             case 'Network Error':
               watchedState.processError = i18n.t('form.network_error');
               break;
-            case 'Error parsing XML':
-              watchedState.processError = i18n.t('form.validation.invalid_rss');
-              break;
             default:
               watchedState.processError = i18n.t('form.validation.invalid_rss');
-              // console.log(`Unhandled error: ${error}`);
               break;
           }
           watchedState.processState = 'failed';
