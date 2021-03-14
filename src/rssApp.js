@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import * as yup from 'yup';
 import _ from 'lodash';
 import axios from 'axios';
-import Example from './Example.js';
+import getBodyElement from './example.js';
 import en from './locales/en.js';
 import ru from './locales/ru.js';
 import watchState from '../view/watchers.js';
@@ -20,8 +20,7 @@ export default () => {
   });
 
   const element = document.getElementById('point');
-  const obj = new Example(element);
-  obj.init();
+  document.body = getBodyElement(element);
 
   const state = {
     processState: null,
