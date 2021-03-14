@@ -1,14 +1,9 @@
 import i18n from 'i18next';
 
-export default class Example {
-  constructor(element) {
-    this.element = element;
-  }
-
-  init() {
-    const body = this.element.closest('body');
-    body.classList.add('d-flex', 'flex-column', 'min-vh-100');
-    body.innerHTML = `<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
+export default (element) => {
+  const body = element.closest('body');
+  body.classList.add('d-flex', 'flex-column', 'min-vh-100');
+  body.innerHTML = `<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -60,5 +55,6 @@ export default class Example {
     <div class="text-center">${i18n.t('created')} <a href="https://github.com/danilaprokoshev" target="_blank">Danila Prokoshev</a></div>
   </div>
 </footer>`;
-  }
-}
+
+  return body;
+};
