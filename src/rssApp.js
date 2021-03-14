@@ -110,25 +110,30 @@ export default () => {
       axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`)
         .then((response) => {
           const { contents } = response.data;
-          try {
-            const feedContent = parseXML(contents);
-            feedContent.feed.url = url.href;
-            _.forEachRight(feedContent.posts, (post) => {
-              _.set(post, 'dataId', _.uniqueId());
-              _.set(post, 'viewed', false);
-            });
-            watchedState.feeds.unshift(feedContent.feed);
-            watchedState.posts = feedContent.posts.concat(watchedState.posts);
-            watchedState.processState = 'processed';
-          } catch {
-            watchedState.processError = i18n.t('form.validation.invalid_rss');
-            watchedState.processState = 'failed';
-          }
+          const feedContent = parseXML(contents);
+          feedContent.feed.url = url.href;
+          _.forEachRight(feedContent.posts, (post) => {
+            _.set(post, 'dataId', _.uniqueId());
+            _.set(post, 'viewed', false);
+          });
+          watchedState.feeds.unshift(feedContent.feed);
+          watchedState.posts = feedContent.posts.concat(watchedState.posts);
+          watchedState.processState = 'processed';
           setTimeout(updatePosts, 5000);
         })
-        .catch(() => {
-          watchedState.processError = i18n.t('form.network_error');
+        .catch((error) => {
           watchedState.processState = 'failed';
+          switch (error.message) {
+            case 'Network Error':
+              watchedState.processError = i18n.t('form.network_error');
+              break;
+            case 'Error parsing XML':
+              watchedState.processError = i18n.t('form.validation.invalid_rss');
+              break;
+            default:
+              console.log(`Unhandled error: ${error}`);
+              break;
+          }
         });
     }
   });
