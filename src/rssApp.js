@@ -3,8 +3,7 @@ import * as yup from 'yup';
 import _ from 'lodash';
 import axios from 'axios';
 import getBodyElement from './example.js';
-import en from './locales/en.js';
-import ru from './locales/ru.js';
+import resources from './locales/resources.js';
 import watchState from '../view/watchers.js';
 import parseXML from './parser.js';
 
@@ -13,10 +12,7 @@ export default () => {
   i18n.init({
     lng: defaultLanguage,
     debug: false,
-    resources: {
-      en,
-      ru,
-    },
+    resources,
   });
 
   const element = document.getElementById('point');
