@@ -133,6 +133,7 @@ export default (state, body) => {
         }
         if (value === 'processed') {
           submitButton.removeAttribute('disabled');
+          console.log(watchedState);
           break;
         }
         if (value === 'failed') {
