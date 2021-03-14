@@ -120,7 +120,7 @@ export default () => {
             watchedState.feeds.unshift(feedContent.feed);
             watchedState.posts = feedContent.posts.concat(watchedState.posts);
             watchedState.processState = 'processed';
-          } catch (error) {
+          } catch {
             watchedState.processError = i18n.t('form.validation.invalid_rss');
             watchedState.processState = 'failed';
           }
