@@ -109,6 +109,10 @@ export default () => {
           if (response.status === 200) return response;
           throw new Error('Network Error');
         })
+        .catch((error) => {
+          watchedState.processError = i18n.t('form.network_error');
+          throw error;
+        })
         .then((response) => {
           const { contents } = response.data;
           const feedContent = parseXML(contents);
@@ -123,15 +127,18 @@ export default () => {
           setTimeout(updatePosts, 5000);
         })
         .catch((error) => {
-          switch (error.message) {
-            case 'Network Error':
-              watchedState.processError = i18n.t('form.network_error');
-              break;
-            default:
-              watchedState.processError = i18n.t('form.validation.invalid_rss');
-              break;
+          if (error.message !== 'Network Error') {
+            watchedState.processError = i18n.t('form.validation.invalid_rss');
           }
           watchedState.processState = 'failed';
+        //     case 'Network Error':
+        //       watchedState.processError = i18n.t('form.network_error');
+        //       break;
+        //     default:
+        //       watchedState.processError = i18n.t('form.validation.invalid_rss');
+        //       break;
+        //   }
+        //   watchedState.processState = 'failed';
         });
     }
   });
