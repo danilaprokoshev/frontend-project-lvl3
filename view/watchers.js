@@ -130,14 +130,17 @@ export default (state, body) => {
       case 'processState':
         if (value === 'sending') {
           submitButton.setAttribute('disabled', 'true');
+          inputEl.setAttribute('readonly', 'readonly');
           break;
         }
         if (value === 'processed') {
           submitButton.removeAttribute('disabled');
+          inputEl.removeAttribute('readonly');
           break;
         }
         if (value === 'failed') {
           submitButton.removeAttribute('disabled');
+          inputEl.removeAttribute('readonly');
           renderProcessError(inputEl, feedbackEl, watchedState.processError);
           break;
         }
