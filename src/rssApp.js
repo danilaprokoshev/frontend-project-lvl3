@@ -93,7 +93,6 @@ export default () => {
       const newPosts = _.differenceBy(feedContent.posts, watchedState.posts, 'title');
       _.forEachRight(newPosts, (post) => _.set(post, 'dataId', _.uniqueId()));
       watchedState.posts = newPosts.concat(watchedState.posts);
-      watchedState.processState = 'processed';
       setTimeout(updatePosts, 5000);
     }));
   };
@@ -128,7 +127,6 @@ export default () => {
               break;
             case 'Error parsing XML':
               watchedState.processError = i18n.t('form.validation.invalid_rss');
-              console.log(watchedState);
               break;
             default:
               console.log(`Unhandled error: ${error}`);
