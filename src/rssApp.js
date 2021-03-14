@@ -83,8 +83,6 @@ export default () => {
   const updatePosts = () => {
     const promises = watchedState.feeds.map((feed) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
       .catch(() => {
-        watchedState.processError = i18n.t('form.network_error');
-        watchedState.processState = 'failed';
       }));
     const promise = Promise.all(promises);
     return promise.then((responses) => responses.forEach((response) => {
