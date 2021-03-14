@@ -131,14 +131,6 @@ export default () => {
             watchedState.processError = i18n.t('form.validation.invalid_rss');
           }
           watchedState.processState = 'failed';
-        //     case 'Network Error':
-        //       watchedState.processError = i18n.t('form.network_error');
-        //       break;
-        //     default:
-        //       watchedState.processError = i18n.t('form.validation.invalid_rss');
-        //       break;
-        //   }
-        //   watchedState.processState = 'failed';
         });
     }
   });
