@@ -12,11 +12,11 @@ const renderFormError = (inputEl, feedbackEl, error) => {
   feedbackEl.textContent = error.url.message; // eslint-disable-line
 };
 
-const renderProcessError = (inputEl, feedbackEl, watchedState) => {
+const renderProcessError = (inputEl, feedbackEl, value) => {
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-success');
   feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = watchedState.processError; // eslint-disable-line
+  feedbackEl.textContent = value; // eslint-disable-line
 };
 
 const renderSuccessFeedback = (inputEl, feedbackEl) => {
@@ -138,7 +138,7 @@ export default (state, body) => {
         }
         if (value === 'failed') {
           submitButton.removeAttribute('disabled');
-          renderProcessError(inputEl, feedbackEl, watchedState);
+          renderProcessError(inputEl, feedbackEl, watchedState.processError);
           break;
         }
         break;
@@ -146,6 +146,12 @@ export default (state, body) => {
         renderFormError(inputEl, feedbackEl, value);
         break;
       case 'processError':
+        if (value === i18n.t('form.network_error')) {
+          renderProcessError(inputEl, feedbackEl, value);
+        }
+        if (value === i18n.t('form.validation.invalid_rss')) {
+          renderProcessError(inputEl, feedbackEl, value);
+        }
         break;
       case 'feeds':
         renderFeeds(body, watchedState);
