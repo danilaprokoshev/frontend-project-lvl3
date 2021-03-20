@@ -173,6 +173,7 @@ export default (state, body) => {
         } else closeModal(body);
         break;
       default:
+        renderPosts(body, watchedState);
         break;
     }
   });
