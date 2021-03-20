@@ -45,57 +45,36 @@ const renderFeeds = (body, watchedState) => {
   feedsColumn.appendChild(feedsUlEl);
 };
 
-const renderPosts = (body, watchedState) => {
-  const postsColumn = body.querySelector('.posts');
+const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl) => {
   postsColumn.innerHTML = '';
-  const postsTitle = document.createElement('h2');
   postsTitle.textContent = i18n.t('posts');
-  const postsUlEl = document.createElement('ul');
-  postsUlEl.classList.add('list-group');
+  postsUlEl.innerHTML = '';
   watchedState.posts.forEach((post) => {
     const liEl = document.createElement('li');
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
     if (post.viewed) {
-      aEl.classList.add('font-weight-normal');
+      aEl.classList.add('fw-normal');
     } else {
-      aEl.classList.add('font-weight-bold');
+      aEl.classList.add('fw-bold');
     }
     aEl.setAttribute('href', post.link);
-    aEl.dataset.id = post.dataId;
     aEl.setAttribute('target', '_blank');
     aEl.setAttribute('rel', 'noopener noreferrer');
     aEl.textContent = post.title;
+    aEl.addEventListener('click', () => linkHandler(post.dataId, watchedState));
     const button = document.createElement('button');
     button.classList.add('btn', 'btn-primary', 'btn-sm');
-    button.dataset.id = post.dataId;
     button.dataset.toggle = 'modal';
     button.dataset.target = '#modal';
     button.textContent = i18n.t('view');
+    button.addEventListener('click', () => openModalHandler(post.dataId, watchedState));
     liEl.appendChild(aEl);
     liEl.appendChild(button);
     postsUlEl.appendChild(liEl);
   });
   postsColumn.appendChild(postsTitle);
   postsColumn.appendChild(postsUlEl);
-
-  const aElements = postsUlEl.querySelectorAll('a');
-  aElements.forEach((aEl) => {
-    const { id } = aEl.dataset;
-    aEl.addEventListener('click', () => linkHandler(id, watchedState));
-  });
-
-  const openModalButtons = postsUlEl.querySelectorAll('[data-toggle="modal"]');
-  const closeModalButtons = body.querySelectorAll('[data-dismiss="modal"]');
-
-  openModalButtons.forEach((button) => {
-    const { id } = button.dataset;
-    button.addEventListener('click', () => openModalHandler(id, watchedState));
-  });
-  closeModalButtons.forEach((button) => {
-    const { id } = button.dataset;
-    button.addEventListener('click', () => closeModalHandler(id, watchedState));
-  });
 };
 
 const renderModal = (body, watchedState) => {
@@ -128,6 +107,11 @@ export default (state, body) => {
   const inputEl = body.querySelector('input');
   const feedbackEl = body.querySelector('.feedback');
   const submitButton = body.querySelector('[type="submit"]');
+
+  const postsColumn = body.querySelector('.posts');
+  const postsTitle = document.createElement('h2');
+  const postsUlEl = document.createElement('ul');
+  postsUlEl.classList.add('list-group');
 
   const processStateHandler = (processState, watchedState) => {
     switch (processState) {
@@ -171,7 +155,7 @@ export default (state, body) => {
         form.reset();
         break;
       case 'posts':
-        renderPosts(body, watchedState);
+        renderPosts(body, watchedState, postsColumn, postsTitle, postsUlEl);
         break;
       case 'modalPost':
         if (value) {
@@ -181,6 +165,11 @@ export default (state, body) => {
       default:
         break;
     }
+  });
+
+  const closeModalButtons = body.querySelectorAll('[data-dismiss="modal"]');
+  closeModalButtons.forEach((button) => {
+    button.addEventListener('click', () => closeModalHandler(watchedState));
   });
 
   return watchedState;

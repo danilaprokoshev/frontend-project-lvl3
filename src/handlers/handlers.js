@@ -15,7 +15,7 @@ export const openModalHandler = (id, watchedState) => {
   watchedState.modalPost = makePostViewed(id, watchedState);
 };
 
-export const closeModalHandler = (id, watchedState) => {
+export const closeModalHandler = (watchedState) => {
   watchedState.modalPost = null;
 };
 
