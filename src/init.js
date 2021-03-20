@@ -79,8 +79,10 @@ export default () => {
     watchedState.form.error = error;
   };
 
+  const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
+
   const updatePosts = () => {
-    const promises = watchedState.feeds.map((feed) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(feed.url)}`)
+    const promises = watchedState.feeds.map((feed) => axios.get(proxyUrl(feed.url))
       .catch(() => {
       }));
     const promise = Promise.all(promises);
@@ -103,7 +105,7 @@ export default () => {
     if (watchedState.form.valid) {
       watchedState.processState = 'sending';
       const url = new URL(formField.url);
-      axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`)
+      axios.get(proxyUrl(url))
         .then((response) => {
           if (response.status === 200) return response;
           throw new Error('Network Error');
