@@ -3,9 +3,8 @@ import * as yup from 'yup';
 import _ from 'lodash';
 import axios from 'axios';
 import getBodyElement from './example.js';
-// import resources from './locales/ru.js';
 import ru from './locales/ru.js';
-import watchState from '../view/watchers.js';
+import watchState from './view/watchers.js';
 import parseXML from './parser.js';
 
 export default () => {
