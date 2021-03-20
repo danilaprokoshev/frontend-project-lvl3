@@ -128,25 +128,31 @@ export default (state, body) => {
   const inputEl = body.querySelector('input');
   const feedbackEl = body.querySelector('.feedback');
   const submitButton = body.querySelector('[type="submit"]');
+
+  const processStateHandler = (processState, watchedState) => {
+    switch (processState) {
+      case 'sending':
+        submitButton.setAttribute('disabled', 'true');
+        inputEl.setAttribute('readonly', 'readonly');
+        break;
+      case 'processed':
+        submitButton.removeAttribute('disabled');
+        inputEl.removeAttribute('readonly');
+        break;
+      case 'failed':
+        submitButton.removeAttribute('disabled');
+        inputEl.removeAttribute('readonly');
+        renderProcessError(inputEl, feedbackEl, watchedState.processError);
+        break;
+      default:
+        throw new Error(`Unknown state: ${processState}`);
+    }
+  };
+
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'processState':
-        if (value === 'sending') {
-          submitButton.setAttribute('disabled', 'true');
-          inputEl.setAttribute('readonly', 'readonly');
-          break;
-        }
-        if (value === 'processed') {
-          submitButton.removeAttribute('disabled');
-          inputEl.removeAttribute('readonly');
-          break;
-        }
-        if (value === 'failed') {
-          submitButton.removeAttribute('disabled');
-          inputEl.removeAttribute('readonly');
-          renderProcessError(inputEl, feedbackEl, watchedState.processError);
-          break;
-        }
+        processStateHandler(value, watchedState);
         break;
       case 'form.error':
         renderFormError(inputEl, feedbackEl, value);
@@ -173,7 +179,6 @@ export default (state, body) => {
         } else closeModal(body);
         break;
       default:
-        renderPosts(body, watchedState);
         break;
     }
   });

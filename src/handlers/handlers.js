@@ -1,8 +1,14 @@
 const makePostViewed = (id, watchedState) => {
-  const post = watchedState.posts.find((el) => el.dataId === id);
-  post.viewed = true;
+  const viewedPost = watchedState.posts.find((post, i) => {
+    if (post.dataId === id) {
+      watchedState.posts[i].viewed = true;
+      return post;
+    }
 
-  return post;
+    return null;
+  });
+
+  return viewedPost;
 };
 
 export const openModalHandler = (id, watchedState) => {
