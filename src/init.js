@@ -1,5 +1,4 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
 import runApp from './rssApp.js';
 
-export default () => {
-  runApp();
-};
+runApp();
