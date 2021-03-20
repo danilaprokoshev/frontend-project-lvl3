@@ -109,7 +109,7 @@ export default () => {
           throw new Error('Network Error');
         })
         .catch((error) => {
-          watchedState.processError = i18nInstance.t('form.network_error');
+          watchedState.processError = 'form.network_error';
           throw error;
         })
         .then((response) => {
@@ -127,7 +127,7 @@ export default () => {
         })
         .catch((error) => {
           if (error.message !== 'Network Error') {
-            watchedState.processError = i18nInstance.t('form.validation.invalid_rss');
+            watchedState.processError = 'form.validation.invalid_rss';
           }
           watchedState.processState = 'failed';
         });

@@ -1,6 +1,7 @@
 import onChange from 'on-change';
 // import i18n from 'i18next';
 import { openModalHandler, closeModalHandler, linkHandler } from '../handlers/handlers.js';
+// import i18n from "i18next";
 
 const renderFormError = (inputEl, feedbackEl, error) => {
   if (!error.url) {
@@ -13,11 +14,11 @@ const renderFormError = (inputEl, feedbackEl, error) => {
   feedbackEl.textContent = error.url.message;
 };
 
-const renderProcessError = (inputEl, feedbackEl, value) => {
+const renderProcessError = (inputEl, feedbackEl, value, i18nInstance) => {
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-success');
   feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = value;
+  feedbackEl.textContent = i18nInstance.t(value);
 };
 
 const renderSuccessFeedback = (inputEl, feedbackEl, i18nInstance) => {
@@ -126,7 +127,7 @@ export default (state, body, i18nInstance) => {
       case 'failed':
         submitButton.removeAttribute('disabled');
         inputEl.removeAttribute('readonly');
-        renderProcessError(inputEl, feedbackEl, watchedState.processError);
+        renderProcessError(inputEl, feedbackEl, watchedState.processError, i18nInstance);
         break;
       default:
         throw new Error(`Unknown state: ${processState}`);
@@ -142,12 +143,7 @@ export default (state, body, i18nInstance) => {
         renderFormError(inputEl, feedbackEl, value);
         break;
       case 'processError':
-        if (value === i18nInstance.t('form.network_error')) {
-          renderProcessError(inputEl, feedbackEl, value);
-        }
-        if (value === i18nInstance.t('form.validation.invalid_rss')) {
-          renderProcessError(inputEl, feedbackEl, value);
-        }
+        renderProcessError(inputEl, feedbackEl, value, i18nInstance);
         break;
       case 'feeds':
         renderFeeds(body, watchedState, i18nInstance);
@@ -160,7 +156,9 @@ export default (state, body, i18nInstance) => {
       case 'modalPost':
         if (value) {
           renderModal(body, watchedState);
-        } else closeModal(body);
+        } else {
+          closeModal(body);
+        }
         break;
       default:
         break;
