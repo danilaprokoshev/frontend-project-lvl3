@@ -52,7 +52,7 @@ const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl, i18
     const liEl = document.createElement('li');
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
-    aEl.classList.add((post.viewed) ? 'fw-normal' : 'fw-bold');
+    aEl.classList.add((post.viewed) ? 'font-weight-normal' : 'font-weight-bold');
     aEl.setAttribute('href', post.link);
     aEl.setAttribute('target', '_blank');
     aEl.setAttribute('rel', 'noopener noreferrer');
