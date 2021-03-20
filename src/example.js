@@ -1,5 +1,3 @@
-// import i18n from 'i18next';
-
 export default (element, i18nInstance) => {
   const body = element.closest('body');
   body.classList.add('d-flex', 'flex-column', 'min-vh-100');

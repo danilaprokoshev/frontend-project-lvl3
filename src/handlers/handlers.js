@@ -1,5 +1,5 @@
-const makePostViewed = (id, watchedState) => {
-  const viewedPost = watchedState.posts.find((post, i) => {
+const makePostViewed = (id, watchedState) => watchedState.posts
+  .find((post, i) => {
     if (post.dataId === id) {
       watchedState.posts[i].viewed = true;
       return post;
@@ -7,9 +7,6 @@ const makePostViewed = (id, watchedState) => {
 
     return null;
   });
-
-  return viewedPost;
-};
 
 export const openModalHandler = (id, watchedState) => {
   watchedState.modalPost = makePostViewed(id, watchedState);

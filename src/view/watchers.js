@@ -1,7 +1,5 @@
 import onChange from 'on-change';
-// import i18n from 'i18next';
 import { openModalHandler, closeModalHandler, linkHandler } from '../handlers/handlers.js';
-// import i18n from "i18next";
 
 const renderFormError = (inputEl, feedbackEl, error) => {
   if (!error.url) {
@@ -54,11 +52,7 @@ const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl, i18
     const liEl = document.createElement('li');
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
-    if (post.viewed) {
-      aEl.classList.add('font-weight-normal');
-    } else {
-      aEl.classList.add('font-weight-bold');
-    }
+    aEl.classList.add((post.viewed) ? 'fw-normal' : 'fw-bold');
     aEl.setAttribute('href', post.link);
     aEl.setAttribute('target', '_blank');
     aEl.setAttribute('rel', 'noopener noreferrer');
@@ -134,6 +128,14 @@ export default (state, body, i18nInstance) => {
     }
   };
 
+  const modalPostHandler = (value, watchedState) => {
+    if (value) {
+      renderModal(body, watchedState);
+    } else {
+      closeModal(body);
+    }
+  };
+
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'processState':
@@ -154,11 +156,7 @@ export default (state, body, i18nInstance) => {
         renderPosts(body, watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;
       case 'modalPost':
-        if (value) {
-          renderModal(body, watchedState);
-        } else {
-          closeModal(body);
-        }
+        modalPostHandler(value, watchedState);
         break;
       default:
         break;
