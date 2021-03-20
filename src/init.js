@@ -8,8 +8,9 @@ import watchState from './view/watchers.js';
 import parseXML from './parser.js';
 
 export default () => {
+  const i18nInstance = i18n.createInstance();
   const defaultLanguage = 'ru';
-  i18n.init({
+  i18nInstance.init({
     lng: defaultLanguage,
     debug: false,
     resources: {
@@ -18,7 +19,7 @@ export default () => {
   });
 
   const element = document.getElementById('point');
-  document.body = getBodyElement(element);
+  document.body = getBodyElement(element, i18nInstance);
 
   const state = {
     processState: null,
@@ -36,12 +37,12 @@ export default () => {
     modalPost: null,
   };
 
-  const watchedState = watchState(state, document.body);
+  const watchedState = watchState(state, document.body, i18nInstance);
 
   yup.setLocale({
     string: {
-      required: i18n.t('form.validation.empty_field'),
-      url: i18n.t('form.validation.invalid_url'),
+      required: i18nInstance.t('form.validation.empty_field'),
+      url: i18nInstance.t('form.validation.invalid_url'),
     },
   });
 
@@ -62,7 +63,7 @@ export default () => {
     if (watchedState.feeds.some((feed) => feed.url === field.url)) {
       return {
         url: {
-          message: i18n.t('form.validation.already_added_rss'),
+          message: i18nInstance.t('form.validation.already_added_rss'),
         },
       };
     }
@@ -108,7 +109,7 @@ export default () => {
           throw new Error('Network Error');
         })
         .catch((error) => {
-          watchedState.processError = i18n.t('form.network_error');
+          watchedState.processError = i18nInstance.t('form.network_error');
           throw error;
         })
         .then((response) => {
@@ -126,7 +127,7 @@ export default () => {
         })
         .catch((error) => {
           if (error.message !== 'Network Error') {
-            watchedState.processError = i18n.t('form.validation.invalid_rss');
+            watchedState.processError = i18nInstance.t('form.validation.invalid_rss');
           }
           watchedState.processState = 'failed';
         });

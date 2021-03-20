@@ -1,6 +1,6 @@
-import i18n from 'i18next';
+// import i18n from 'i18next';
 
-export default (element) => {
+export default (element, i18nInstance) => {
   const body = element.closest('body');
   body.classList.add('d-flex', 'flex-column', 'min-vh-100');
   body.innerHTML = `<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modal" aria-hidden="true">
@@ -14,8 +14,8 @@ export default (element) => {
       </div>
       <div class="modal-body"></div>
       <div class="modal-footer">
-        <a class="btn btn-primary full-article" href="#" role="button" target="_blank" rel="noopener noreferrer">${i18n.t('modal.read')}</a>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">${i18n.t('modal.close')}</button>
+        <a class="btn btn-primary full-article" href="#" role="button" target="_blank" rel="noopener noreferrer">${i18nInstance.t('modal.read')}</a>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">${i18nInstance.t('modal.close')}</button>
       </div>
     </div>
   </div>
@@ -24,19 +24,19 @@ export default (element) => {
   <section class="container-fluid bg-dark p-5">
     <div class="row">
       <div class="col-md-10 col-lg-8 mx-auto text-white">
-        <h1 class="display-3">${i18n.t('title.main_title')}</h1>
-        <p class="lead">${i18n.t('title.trigger')}</p>
+        <h1 class="display-3">${i18nInstance.t('title.main_title')}</h1>
+        <p class="lead">${i18nInstance.t('title.trigger')}</p>
         <form action="" class="rss-form">
           <div class="row">
             <div class="col">
-              <input autofocus="" required="" name="url" aria-label="url" class="form-control form-control-lg w-100" placeholder="${i18n.t('title.placeholder')}">
+              <input autofocus="" required="" name="url" aria-label="url" class="form-control form-control-lg w-100" placeholder="${i18nInstance.t('title.placeholder')}">
             </div>
             <div class="col-auto">
-              <button type="submit" aria-label="add" class="btn btn-lg btn-primary px-sm-5">${i18n.t('title.add')}</button>
+              <button type="submit" aria-label="add" class="btn btn-lg btn-primary px-sm-5">${i18nInstance.t('title.add')}</button>
             </div>
           </div>
         </form>
-        <p class="text-muted my-1">${i18n.t('title.example')}: https://www.nasa.gov/rss/dyn/educationnews.rss</p>
+        <p class="text-muted my-1">${i18nInstance.t('title.example')}: https://www.nasa.gov/rss/dyn/educationnews.rss</p>
         <div class="feedback"></div>
       </div>
     </div>
@@ -52,7 +52,7 @@ export default (element) => {
 </main>
 <footer class="footer border-top py-3 mt-5">
   <div class="container-xl">
-    <div class="text-center">${i18n.t('created')} <a href="https://github.com/danilaprokoshev" target="_blank">Danila Prokoshev</a></div>
+    <div class="text-center">${i18nInstance.t('created')} <a href="https://github.com/danilaprokoshev" target="_blank">Danila Prokoshev</a></div>
   </div>
 </footer>`;
 

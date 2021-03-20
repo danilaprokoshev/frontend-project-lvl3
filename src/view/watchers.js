@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import i18n from 'i18next';
+// import i18n from 'i18next';
 import { openModalHandler, closeModalHandler, linkHandler } from '../handlers/handlers.js';
 
 const renderFormError = (inputEl, feedbackEl, error) => {
@@ -20,18 +20,18 @@ const renderProcessError = (inputEl, feedbackEl, value) => {
   feedbackEl.textContent = value;
 };
 
-const renderSuccessFeedback = (inputEl, feedbackEl) => {
+const renderSuccessFeedback = (inputEl, feedbackEl, i18nInstance) => {
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-danger');
   feedbackEl.classList.add('text-success');
-  feedbackEl.textContent = i18n.t('form.success_feedback');
+  feedbackEl.textContent = i18nInstance.t('form.success_feedback');
 };
 
-const renderFeeds = (body, watchedState) => {
+const renderFeeds = (body, watchedState, i18nInstance) => {
   const feedsColumn = body.querySelector('.feeds');
   feedsColumn.innerHTML = '';
   const feedsTitle = document.createElement('h2');
-  feedsTitle.textContent = i18n.t('feeds');
+  feedsTitle.textContent = i18nInstance.t('feeds');
   const feedsUlEl = document.createElement('ul');
   feedsUlEl.classList.add('list-group', 'mb-5');
   watchedState.feeds.forEach((feed) => {
@@ -45,9 +45,9 @@ const renderFeeds = (body, watchedState) => {
   feedsColumn.appendChild(feedsUlEl);
 };
 
-const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl) => {
+const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance) => {
   postsColumn.innerHTML = '';
-  postsTitle.textContent = i18n.t('posts');
+  postsTitle.textContent = i18nInstance.t('posts');
   postsUlEl.innerHTML = '';
   watchedState.posts.forEach((post) => {
     const liEl = document.createElement('li');
@@ -67,7 +67,7 @@ const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl) => 
     button.classList.add('btn', 'btn-primary', 'btn-sm');
     button.dataset.toggle = 'modal';
     button.dataset.target = '#modal';
-    button.textContent = i18n.t('view');
+    button.textContent = i18nInstance.t('view');
     button.addEventListener('click', () => openModalHandler(post.dataId, watchedState));
     liEl.appendChild(aEl);
     liEl.appendChild(button);
@@ -102,7 +102,7 @@ const closeModal = (body) => {
   body.classList.remove('modal-open');
 };
 
-export default (state, body) => {
+export default (state, body, i18nInstance) => {
   const form = body.querySelector('.rss-form');
   const inputEl = body.querySelector('input');
   const feedbackEl = body.querySelector('.feedback');
@@ -142,20 +142,20 @@ export default (state, body) => {
         renderFormError(inputEl, feedbackEl, value);
         break;
       case 'processError':
-        if (value === i18n.t('form.network_error')) {
+        if (value === i18nInstance.t('form.network_error')) {
           renderProcessError(inputEl, feedbackEl, value);
         }
-        if (value === i18n.t('form.validation.invalid_rss')) {
+        if (value === i18nInstance.t('form.validation.invalid_rss')) {
           renderProcessError(inputEl, feedbackEl, value);
         }
         break;
       case 'feeds':
-        renderFeeds(body, watchedState);
-        renderSuccessFeedback(inputEl, feedbackEl);
+        renderFeeds(body, watchedState, i18nInstance);
+        renderSuccessFeedback(inputEl, feedbackEl, i18nInstance);
         form.reset();
         break;
       case 'posts':
-        renderPosts(body, watchedState, postsColumn, postsTitle, postsUlEl);
+        renderPosts(body, watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;
       case 'modalPost':
         if (value) {
