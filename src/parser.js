@@ -1,11 +1,7 @@
 export default (xml) => {
   const parser = new DOMParser();
-
-  const docError = parser.parseFromString('INVALID', 'text/xml');
-  const parsererrorNS = docError.getElementsByTagName('parsererror')[0].namespaceURI;
-
   const doc = parser.parseFromString(xml, 'text/xml');
-  if (doc.getElementsByTagNameNS(parsererrorNS, 'parsererror').length > 0) {
+  if (doc.documentElement.querySelector('parsererror')) {
     throw new Error('Error parsing XML');
   }
   const title = doc.querySelector('title');
