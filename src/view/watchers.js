@@ -54,9 +54,9 @@ const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl) => 
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
     if (post.viewed) {
-      aEl.classList.add('fw-normal');
+      aEl.classList.add('font-weight-normal');
     } else {
-      aEl.classList.add('fw-bold');
+      aEl.classList.add('font-weight-bold');
     }
     aEl.setAttribute('href', post.link);
     aEl.setAttribute('target', '_blank');
