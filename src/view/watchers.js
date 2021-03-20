@@ -1,29 +1,30 @@
 import onChange from 'on-change';
 import i18n from 'i18next';
+import { openModalHandler, closeModalHandler, linkHandler } from '../handlers/handlers.js';
 
 const renderFormError = (inputEl, feedbackEl, error) => {
   if (!error.url) {
     inputEl.classList.remove('is-invalid');
-    feedbackEl.innerHTML = ''; // eslint-disable-line
+    feedbackEl.innerHTML = '';
     return;
   }
   inputEl.classList.add('is-invalid');
   feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = error.url.message; // eslint-disable-line
+  feedbackEl.textContent = error.url.message;
 };
 
 const renderProcessError = (inputEl, feedbackEl, value) => {
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-success');
   feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = value; // eslint-disable-line
+  feedbackEl.textContent = value;
 };
 
 const renderSuccessFeedback = (inputEl, feedbackEl) => {
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-danger');
   feedbackEl.classList.add('text-success');
-  feedbackEl.textContent = i18n.t('form.success_feedback'); // eslint-disable-line
+  feedbackEl.textContent = i18n.t('form.success_feedback');
 };
 
 const renderFeeds = (body, watchedState) => {
@@ -80,44 +81,46 @@ const renderPosts = (body, watchedState) => {
 
   const aElements = postsUlEl.querySelectorAll('a');
   aElements.forEach((aEl) => {
-    aEl.addEventListener('click', () => {
-      const { id } = aEl.dataset;
-      const post = watchedState.posts.find((el) => el.dataId === id);
-      post.viewed = true;
-    });
+    const { id } = aEl.dataset;
+    aEl.addEventListener('click', () => linkHandler(id, watchedState));
   });
 
-  const buttons = postsUlEl.querySelectorAll('button');
+  const openModalButtons = postsUlEl.querySelectorAll('[data-toggle="modal"]');
+  const closeModalButtons = body.querySelectorAll('[data-dismiss="modal"]');
+
+  openModalButtons.forEach((button) => {
+    const { id } = button.dataset;
+    button.addEventListener('click', () => openModalHandler(id, watchedState));
+  });
+  closeModalButtons.forEach((button) => {
+    const { id } = button.dataset;
+    button.addEventListener('click', () => closeModalHandler(id, watchedState));
+  });
+};
+
+const renderModal = (body, watchedState) => {
   const modal = body.querySelector('#modal');
   const modalTitle = modal.querySelector('.modal-title');
   const modalBody = modal.querySelector('.modal-body');
   const modalReadFullArticle = modal.querySelector('.full-article');
   const backdropEl = document.createElement('div');
-  buttons.forEach((button) => {
-    button.addEventListener('click', () => { // TODO: вынести в отдельную функцию
-      const { id } = button.dataset;
-      const post = watchedState.posts.find((el) => el.dataId === id);
-      post.viewed = true;
-      renderPosts(body, watchedState);
-      modal.classList.add('show');
-      modal.style.display = 'block';
-      modalTitle.textContent = post.title;
-      const closeButtons = modal.querySelectorAll('[data-dismiss="modal"]');
-      closeButtons.forEach((closeButton) => {
-        closeButton.addEventListener('click', () => { // TODO: вынести в отдельную фунцкцию
-          modal.classList.remove('show');
-          modal.style.display = 'none';
-          backdropEl.remove();
-          body.classList.remove('modal-open');
-        });
-      });
-      modalBody.textContent = post.description;
-      modalReadFullArticle.href = post.link;
-      backdropEl.classList.add('modal-backdrop', 'fade', 'show');
-      body.appendChild(backdropEl);
-      body.classList.add('modal-open');
-    });
-  });
+  modal.classList.add('show');
+  modal.style.display = 'block';
+  modalTitle.textContent = watchedState.modalPost.title;
+  modalBody.textContent = watchedState.modalPost.description;
+  modalReadFullArticle.href = watchedState.modalPost.link;
+  backdropEl.classList.add('modal-backdrop', 'fade', 'show');
+  body.appendChild(backdropEl);
+  body.classList.add('modal-open');
+};
+
+const closeModal = (body) => {
+  const modal = body.querySelector('#modal');
+  const backdropEl = body.querySelector('.modal-backdrop');
+  modal.classList.remove('show');
+  modal.style.display = 'none';
+  backdropEl.remove();
+  body.classList.remove('modal-open');
 };
 
 export default (state, body) => {
@@ -163,6 +166,11 @@ export default (state, body) => {
         break;
       case 'posts':
         renderPosts(body, watchedState);
+        break;
+      case 'modalPost':
+        if (value) {
+          renderModal(body, watchedState);
+        } else closeModal(body);
         break;
       default:
         break;

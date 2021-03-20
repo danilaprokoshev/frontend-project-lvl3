@@ -33,6 +33,7 @@ export default () => {
     },
     feeds: [],
     posts: [],
+    modalPost: null,
   };
 
   const watchedState = watchState(state, document.body);
