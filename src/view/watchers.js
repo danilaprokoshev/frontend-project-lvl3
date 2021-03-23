@@ -13,10 +13,6 @@ const renderFormError = (inputEl, feedbackEl, error) => {
 };
 
 const renderProcessError = (inputEl, feedbackEl, value, i18nInstance) => {
-  if (!value) {
-    feedbackEl.textContent = '';
-    return;
-  }
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-success');
   feedbackEl.classList.add('text-danger');
@@ -30,8 +26,7 @@ const renderSuccessFeedback = (inputEl, feedbackEl, i18nInstance) => {
   feedbackEl.textContent = i18nInstance.t('form.success_feedback');
 };
 
-const renderFeeds = (body, watchedState, i18nInstance) => {
-  const feedsColumn = body.querySelector('.feeds');
+const renderFeeds = (feedsColumn, watchedState, i18nInstance) => {
   feedsColumn.innerHTML = '';
   const feedsTitle = document.createElement('h2');
   feedsTitle.textContent = i18nInstance.t('feeds');
@@ -48,7 +43,7 @@ const renderFeeds = (body, watchedState, i18nInstance) => {
   feedsColumn.appendChild(feedsUlEl);
 };
 
-const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance) => {
+const renderPosts = (watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance) => {
   postsColumn.innerHTML = '';
   postsTitle.textContent = i18nInstance.t('posts');
   postsUlEl.innerHTML = '';
@@ -76,8 +71,7 @@ const renderPosts = (body, watchedState, postsColumn, postsTitle, postsUlEl, i18
   postsColumn.appendChild(postsUlEl);
 };
 
-const renderModal = (body, watchedState) => {
-  const modal = body.querySelector('#modal');
+const renderModal = (modal, watchedState) => {
   const modalTitle = modal.querySelector('.modal-title');
   const modalBody = modal.querySelector('.modal-body');
   const modalReadFullArticle = modal.querySelector('.full-article');
@@ -88,12 +82,13 @@ const renderModal = (body, watchedState) => {
   modalBody.textContent = watchedState.modalPost.description;
   modalReadFullArticle.href = watchedState.modalPost.link;
   backdropEl.classList.add('modal-backdrop', 'fade', 'show');
+  const body = modal.closest('body');
   body.appendChild(backdropEl);
   body.classList.add('modal-open');
 };
 
-const closeModal = (body) => {
-  const modal = body.querySelector('#modal');
+const closeModal = (modal) => {
+  const body = modal.closest('body');
   const backdropEl = body.querySelector('.modal-backdrop');
   modal.classList.remove('show');
   modal.style.display = 'none';
@@ -101,13 +96,10 @@ const closeModal = (body) => {
   body.classList.remove('modal-open');
 };
 
-export default (state, body, i18nInstance) => {
-  const form = body.querySelector('.rss-form');
-  const inputEl = body.querySelector('input');
-  const feedbackEl = body.querySelector('.feedback');
-  const submitButton = body.querySelector('[type="submit"]');
-
-  const postsColumn = body.querySelector('.posts');
+export default (state, form, feedbackEl, feedsColumn,
+  postsColumn, modal, closeModalButtons, i18nInstance) => {
+  const inputEl = form.querySelector('input');
+  const submitButton = form.querySelector('[type="submit"]');
   const postsTitle = document.createElement('h2');
   const postsUlEl = document.createElement('ul');
   postsUlEl.classList.add('list-group');
@@ -134,9 +126,9 @@ export default (state, body, i18nInstance) => {
 
   const modalPostHandler = (value, watchedState) => {
     if (value) {
-      renderModal(body, watchedState);
+      renderModal(modal, watchedState);
     } else {
-      closeModal(body);
+      closeModal(modal);
     }
   };
 
@@ -152,12 +144,12 @@ export default (state, body, i18nInstance) => {
         renderProcessError(inputEl, feedbackEl, value, i18nInstance);
         break;
       case 'feeds':
-        renderFeeds(body, watchedState, i18nInstance);
+        renderFeeds(feedsColumn, watchedState, i18nInstance);
         renderSuccessFeedback(inputEl, feedbackEl, i18nInstance);
         form.reset();
         break;
       case 'posts':
-        renderPosts(body, watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
+        renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;
       case 'modalPost':
         modalPostHandler(value, watchedState);
@@ -167,7 +159,6 @@ export default (state, body, i18nInstance) => {
     }
   });
 
-  const closeModalButtons = body.querySelectorAll('[data-dismiss="modal"]');
   closeModalButtons.forEach((button) => {
     button.addEventListener('click', () => closeModalHandler(watchedState));
   });

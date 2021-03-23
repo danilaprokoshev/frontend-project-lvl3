@@ -33,7 +33,23 @@ export default () => {
     modalPost: null,
   };
 
-  const watchedState = watchState(state, document.body, i18nInstance);
+  const form = document.querySelector('.rss-form');
+  const feedbackEl = document.querySelector('.feedback');
+  const feedsColumn = document.querySelector('.feeds');
+  const postsColumn = document.querySelector('.posts');
+  const modal = document.querySelector('#modal');
+  const closeModalButtons = document.querySelectorAll('[data-dismiss="modal"]');
+
+  const watchedState = watchState(
+    state,
+    form,
+    feedbackEl,
+    feedsColumn,
+    postsColumn,
+    modal,
+    closeModalButtons,
+    i18nInstance,
+  );
 
   yup.setLocale({
     string: {
@@ -77,11 +93,7 @@ export default () => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const updatePosts = () => {
-    const promises = watchedState.feeds.map((feed) => axios.get(proxyUrl(feed.url))
-      .finally(() => {
-        setTimeout(updatePosts, DELAY);
-      }));
-
+    const promises = watchedState.feeds.map((feed) => axios.get(proxyUrl(feed.url)));
     const promise = Promise.all(promises);
     return promise.then((responses) => responses.forEach((response) => {
       const { contents } = response.data;
@@ -89,10 +101,12 @@ export default () => {
       const newPosts = _.differenceBy(feedContent.posts, watchedState.posts, 'title');
       _.forEachRight(newPosts, (post) => _.set(post, 'dataId', _.uniqueId()));
       watchedState.posts = newPosts.concat(watchedState.posts);
-    }));
+    }))
+      .finally(() => {
+        setTimeout(updatePosts, DELAY);
+      });
   };
 
-  const form = document.querySelector('.rss-form');
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
