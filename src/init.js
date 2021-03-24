@@ -102,6 +102,12 @@ export default () => {
       _.forEachRight(newPosts, (post) => _.set(post, 'dataId', _.uniqueId()));
       watchedState.posts = newPosts.concat(watchedState.posts);
     }))
+      .then(() => {
+        watchedState.processError = null;
+      })
+      .catch(() => {
+        watchedState.processError = 'form.network_error';
+      })
       .finally(() => {
         setTimeout(updatePosts, DELAY);
       });

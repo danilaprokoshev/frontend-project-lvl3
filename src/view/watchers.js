@@ -13,6 +13,9 @@ const renderFormError = (inputEl, feedbackEl, error) => {
 };
 
 const renderProcessError = (inputEl, feedbackEl, value, i18nInstance) => {
+  if (!value) {
+    feedbackEl.textContent = '';
+  }
   inputEl.classList.remove('is-invalid');
   feedbackEl.classList.remove('text-success');
   feedbackEl.classList.add('text-danger');
