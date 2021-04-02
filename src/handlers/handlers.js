@@ -1,7 +1,6 @@
-const makePostViewed = (id, watchedState) => watchedState.postUIStates
-  .find((post, i) => {
+const makePostViewed = (id, watchedState) => watchedState.posts
+  .find((post) => {
     if (post.dataId === id) {
-      watchedState.postUIStates[i].viewed = true;
       return post;
     }
 
@@ -9,6 +8,8 @@ const makePostViewed = (id, watchedState) => watchedState.postUIStates
   });
 
 export const openModalHandler = (id, watchedState) => {
+  watchedState.postsState.viewed[id] = true;
+  watchedState.postsState.viewed = { ...watchedState.postsState.viewed };
   watchedState.modalPost = makePostViewed(id, watchedState);
 };
 
@@ -17,5 +18,7 @@ export const closeModalHandler = (watchedState) => {
 };
 
 export const linkHandler = (id, watchedState) => {
+  watchedState.postsState.viewed[id] = true;
+  watchedState.postsState.viewed = { ...watchedState.postsState.viewed };
   makePostViewed(id, watchedState);
 };

@@ -53,22 +53,22 @@ const renderPosts = (watchedState, postsColumn, postsTitle, postsUlEl, i18nInsta
   postsColumn.innerHTML = '';
   postsTitle.textContent = i18nInstance.t('posts');
   postsUlEl.innerHTML = '';
-  watchedState.posts.forEach((post) => {
+  watchedState.posts.forEach(({ dataId, title, link }) => {
     const liEl = document.createElement('li');
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
-    aEl.classList.add((post.viewed) ? 'font-weight-normal' : 'font-weight-bold');
-    aEl.setAttribute('href', post.link);
+    aEl.classList.add((watchedState.postsState.viewed[dataId]) ? 'fw-normal' : 'fw-bold');
+    aEl.setAttribute('href', link);
     aEl.setAttribute('target', '_blank');
     aEl.setAttribute('rel', 'noopener noreferrer');
-    aEl.textContent = post.title;
-    aEl.addEventListener('click', () => linkHandler(post.dataId, watchedState));
+    aEl.textContent = title;
+    aEl.addEventListener('click', () => linkHandler(dataId, watchedState));
     const button = document.createElement('button');
     button.classList.add('btn', 'btn-primary', 'btn-sm');
     button.dataset.toggle = 'modal';
     button.dataset.target = '#modal';
     button.textContent = i18nInstance.t('view');
-    button.addEventListener('click', () => openModalHandler(post.dataId, watchedState));
+    button.addEventListener('click', () => openModalHandler(dataId, watchedState));
     liEl.appendChild(aEl);
     liEl.appendChild(button);
     postsUlEl.appendChild(liEl);
@@ -155,6 +155,9 @@ export default (state, form, feedbackEl, feedsColumn,
         form.reset();
         break;
       case 'posts':
+        renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
+        break;
+      case 'postsState.viewed':
         renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;
       case 'modalPost':

@@ -29,7 +29,9 @@ export default () => {
     },
     feeds: [],
     posts: [],
-    postUIStates: [],
+    postsState: {
+      viewed: {},
+    },
     modalPost: null,
   };
 
@@ -93,7 +95,11 @@ export default () => {
       const { contents } = response.data;
       const feedContent = parseXML(contents);
       const newPosts = _.differenceBy(feedContent.posts, watchedState.posts, 'title');
-      _.forEachRight(newPosts, (post) => _.set(post, 'dataId', _.uniqueId()));
+      _.forEachRight(newPosts, (post) => {
+        const dataId = _.uniqueId();
+        _.set(post, 'dataId', dataId);
+        watchedState.postsState.viewed[dataId] = false;
+      });
       watchedState.posts = newPosts.concat(watchedState.posts);
     }))
       .then(() => {
@@ -131,15 +137,12 @@ export default () => {
         const feedContent = parseXML(contents);
         feedContent.feed.url = url.href;
         _.forEachRight(feedContent.posts, (post) => {
-          _.set(post, 'dataId', _.uniqueId());
-          // _.set(post, 'viewed', false);
+          const dataId = _.uniqueId();
+          _.set(post, 'dataId', dataId);
+          watchedState.postsState.viewed[dataId] = false;
         });
-        const postUIStates = Array.from(feedContent.posts)
-          .map(({ dataId }) => ({ dataId, viewed: false }));
         watchedState.feeds.unshift(feedContent.feed);
         watchedState.posts = feedContent.posts.concat(watchedState.posts);
-        watchedState.postUIStates = postUIStates.concat(watchedState.postUIStates);
-        console.log(watchedState.postUIStates);
         watchedState.processState = 'processed';
         setTimeout(updatePosts, DELAY);
       })
