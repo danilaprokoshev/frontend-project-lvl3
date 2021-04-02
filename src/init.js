@@ -156,7 +156,7 @@ export default () => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        if (error.message === 'Error parsing XML') {
+        if (error.message !== 'Network Error') {
           watchedState.processError = 'form.validation.invalid_rss';
         }
         watchedState.processState = 'failed';
