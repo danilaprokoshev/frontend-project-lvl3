@@ -24,12 +24,12 @@ export default () => {
       field: {
         url: '',
       },
-      feedsList: [],
       valid: true,
-      error: {},
+      error: '',
     },
     feeds: [],
     posts: [],
+    postUIStates: [],
     modalPost: null,
   };
 
@@ -58,35 +58,29 @@ export default () => {
     },
   });
 
-  const schema = yup.object().shape({
-    url: yup.string().required().url(),
-  });
+  const schema = yup.string().required().url();
 
-  const validate = (field) => {
+  const validate = (urlString) => {
     try {
-      schema.validateSync(field, { abortEarly: false });
-      return {};
+      schema.validateSync(urlString, { abortEarly: false });
+      return '';
     } catch (e) {
-      return _.keyBy(e.inner, 'path');
+      return e.message;
     }
   };
 
-  const checkFeedStatus = (field) => {
-    if (!watchedState.feeds.some((feed) => feed.url === field.url)) {
-      return {};
+  const checkFeedStatus = (urlString) => {
+    if (!watchedState.feeds.some((feed) => feed.url === urlString)) {
+      return '';
     }
-    return {
-      url: {
-        message: i18nInstance.t('form.validation.already_added_rss'),
-      },
-    };
+    return i18nInstance.t('form.validation.already_added_rss');
   };
 
-  const updateValidationState = (field) => {
-    const validationError = validate(field);
-    const checkStatusError = checkFeedStatus(field);
-    const error = { ...validationError, ...checkStatusError };
-    watchedState.form.valid = _.isEmpty(error);
+  const updateValidationState = (urlString) => {
+    const validationError = validate(urlString);
+    const checkStatusError = checkFeedStatus(urlString);
+    const error = validationError || checkStatusError;
+    watchedState.form.valid = error === '';
     watchedState.form.error = error;
   };
 
@@ -116,13 +110,13 @@ export default () => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const formField = Object.fromEntries(formData);
-    updateValidationState(formField);
+    const urlString = formData.get('url');
+    updateValidationState(urlString);
     if (!watchedState.form.valid) {
       return;
     }
     watchedState.processState = 'sending';
-    const url = new URL(formField.url);
+    const url = new URL(urlString);
     axios.get(proxyUrl(url))
       .then((response) => {
         if (response.status === 200) return response;
@@ -138,10 +132,14 @@ export default () => {
         feedContent.feed.url = url.href;
         _.forEachRight(feedContent.posts, (post) => {
           _.set(post, 'dataId', _.uniqueId());
-          _.set(post, 'viewed', false);
+          // _.set(post, 'viewed', false);
         });
+        const postUIStates = Array.from(feedContent.posts)
+          .map(({ dataId }) => ({ dataId, viewed: false }));
         watchedState.feeds.unshift(feedContent.feed);
         watchedState.posts = feedContent.posts.concat(watchedState.posts);
+        watchedState.postUIStates = postUIStates.concat(watchedState.postUIStates);
+        console.log(watchedState.postUIStates);
         watchedState.processState = 'processed';
         setTimeout(updatePosts, DELAY);
       })

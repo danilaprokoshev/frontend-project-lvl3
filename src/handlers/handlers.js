@@ -1,7 +1,7 @@
-const makePostViewed = (id, watchedState) => watchedState.posts
+const makePostViewed = (id, watchedState) => watchedState.postUIStates
   .find((post, i) => {
     if (post.dataId === id) {
-      watchedState.posts[i].viewed = true;
+      watchedState.postUIStates[i].viewed = true;
       return post;
     }
 

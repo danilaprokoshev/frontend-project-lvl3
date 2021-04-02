@@ -2,14 +2,14 @@ import onChange from 'on-change';
 import { openModalHandler, closeModalHandler, linkHandler } from '../handlers/handlers.js';
 
 const renderFormError = (inputEl, feedbackEl, error) => {
-  if (!error.url) {
+  if (!error) {
     inputEl.classList.remove('is-invalid');
     feedbackEl.innerHTML = '';
     return;
   }
   inputEl.classList.add('is-invalid');
   feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = error.url.message;
+  feedbackEl.textContent = error;
 };
 
 const renderProcessError = (inputEl, feedbackEl, value, i18nInstance) => {
