@@ -105,8 +105,17 @@ export default () => {
       .then(() => {
         watchedState.processError = null;
       })
-      .catch(() => {
-        watchedState.processError = 'form.network_error';
+      .catch((error) => {
+        switch (error.message) {
+          case 'Network Error':
+            watchedState.processError = 'form.network_error';
+            break;
+          case 'Error parsing XML':
+            watchedState.processError = 'form.validation.invalid_rss';
+            break;
+          default:
+            throw new Error(`Unknown error: '${error}'!`);
+        }
       })
       .finally(() => {
         setTimeout(updatePosts, DELAY);
@@ -147,7 +156,7 @@ export default () => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        if (error.message !== 'Network Error') {
+        if (error.message === 'Error parsing XML') {
           watchedState.processError = 'form.validation.invalid_rss';
         }
         watchedState.processState = 'failed';
