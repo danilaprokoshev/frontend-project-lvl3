@@ -57,7 +57,7 @@ const renderPosts = (watchedState, postsColumn, postsTitle, postsUlEl, i18nInsta
     const liEl = document.createElement('li');
     liEl.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     const aEl = document.createElement('a');
-    aEl.classList.add((watchedState.postsState.viewed[dataId]) ? 'font-weight-normal' : 'font-weight-bold');
+    aEl.classList.add((watchedState.viewedPosts.has(dataId)) ? 'font-weight-normal' : 'font-weight-bold');
     aEl.setAttribute('href', link);
     aEl.setAttribute('target', '_blank');
     aEl.setAttribute('rel', 'noopener noreferrer');
@@ -157,7 +157,7 @@ export default (state, form, feedbackEl, feedsColumn,
       case 'posts':
         renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;
-      case 'postsState.viewed':
+      case 'viewedPosts':
         renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;
       case 'modalPost':

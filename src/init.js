@@ -29,9 +29,7 @@ export default () => {
     },
     feeds: [],
     posts: [],
-    postsState: {
-      viewed: {},
-    },
+    viewedPosts: new Set(),
     modalPost: null,
   };
 
@@ -96,9 +94,7 @@ export default () => {
       const feedContent = parseXML(contents);
       const newPosts = _.differenceBy(feedContent.posts, watchedState.posts, 'title');
       _.forEachRight(newPosts, (post) => {
-        const dataId = _.uniqueId();
-        _.set(post, 'dataId', dataId);
-        watchedState.postsState.viewed[dataId] = false;
+        _.set(post, 'dataId', _.uniqueId());
       });
       watchedState.posts = newPosts.concat(watchedState.posts);
     }))
@@ -146,9 +142,7 @@ export default () => {
         const feedContent = parseXML(contents);
         feedContent.feed.url = url.href;
         _.forEachRight(feedContent.posts, (post) => {
-          const dataId = _.uniqueId();
-          _.set(post, 'dataId', dataId);
-          watchedState.postsState.viewed[dataId] = false;
+          _.set(post, 'dataId', _.uniqueId());
         });
         watchedState.feeds.unshift(feedContent.feed);
         watchedState.posts = feedContent.posts.concat(watchedState.posts);

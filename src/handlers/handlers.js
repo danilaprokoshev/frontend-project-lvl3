@@ -8,8 +8,7 @@ const getModalPost = (id, watchedState) => watchedState.posts
   });
 
 export const openModalHandler = (id, watchedState) => {
-  watchedState.postsState.viewed[id] = true;
-  watchedState.postsState.viewed = { ...watchedState.postsState.viewed };
+  watchedState.viewedPosts.add(id);
   watchedState.modalPost = getModalPost(id, watchedState);
 };
 
@@ -18,7 +17,6 @@ export const closeModalHandler = (watchedState) => {
 };
 
 export const linkHandler = (id, watchedState) => {
-  watchedState.postsState.viewed[id] = true;
-  watchedState.postsState.viewed = { ...watchedState.postsState.viewed };
+  watchedState.viewedPosts.add(id);
   getModalPost(id, watchedState);
 };
