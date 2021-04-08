@@ -90,10 +90,8 @@ export default () => {
     if (error.isAxiosError) {
       return 'form.network_error';
     }
-    if (error.isParserError) {
-      return 'form.validation.invalid_rss';
-    }
-    return 'unknown_error';
+
+    return 'form.validation.invalid_rss';
   };
 
   const updatePosts = () => {
