@@ -94,9 +94,9 @@ export default (i18nInstance) => {
       });
       watchedState.posts = newPosts.concat(watchedState.posts);
     }))
-      .then(() => {
-        watchedState.processError = null;
-      })
+      // .then(() => {
+      //   watchedState.processError = null;
+      // })
       .catch((error) => {
         console.log(i18nInstance.t(
           localizeError(error),
@@ -131,8 +131,11 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
+        console.log(error.name);
+        console.log(error.message);
         watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
+        console.log(watchedState);
       });
   });
 };
