@@ -6,7 +6,7 @@ class ParserError extends Error {
     }
 
     this.name = 'ParserError';
-    this.isParserError = true;
+    this.isAxiosError = false;
   }
 }
 
