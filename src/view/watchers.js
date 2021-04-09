@@ -110,7 +110,7 @@ export default (state, form, feedbackEl, feedsColumn,
   const postsUlEl = document.createElement('ul');
   postsUlEl.classList.add('list-group');
 
-  const processStateHandler = (processState) => {
+  const processStateHandler = (processState, watchedState) => {
     switch (processState) {
       case 'sending':
         submitButton.setAttribute('disabled', 'true');
@@ -123,7 +123,7 @@ export default (state, form, feedbackEl, feedsColumn,
       case 'failed':
         submitButton.removeAttribute('disabled');
         inputEl.removeAttribute('readonly');
-        // renderProcessError(inputEl, feedbackEl, watchedState.processError, i18nInstance);
+        renderProcessError(inputEl, feedbackEl, watchedState.processError, i18nInstance);
         break;
       default:
         throw new Error(`Unknown state: ${processState}`);
@@ -141,7 +141,7 @@ export default (state, form, feedbackEl, feedsColumn,
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'processState':
-        processStateHandler(value);
+        processStateHandler(value, watchedState);
         break;
       case 'form.error':
         renderFormError(inputEl, feedbackEl, value);
