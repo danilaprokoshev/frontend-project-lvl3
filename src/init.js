@@ -90,7 +90,7 @@ export default () => {
     if (error.isAxiosError) {
       return 'form.network_error';
     }
-    return null;
+    return 'form.validation.invalid_rss';
   };
 
   const updatePosts = () => {
@@ -142,7 +142,7 @@ export default () => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        watchedState.processError = localizeError(error) || 'form.validation.invalid_rss';
+        watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
       });
   });
