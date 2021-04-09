@@ -13,16 +13,10 @@ const renderFormError = (inputEl, feedbackEl, error) => {
 };
 
 const renderProcessError = (inputEl, feedbackEl, value, i18nInstance) => {
-  switch (value) {
-    case null:
-      break;
-    default:
-      inputEl.classList.remove('is-invalid');
-      feedbackEl.classList.remove('text-success');
-      feedbackEl.classList.add('text-danger');
-      feedbackEl.textContent = i18nInstance.t(value);
-      break;
-  }
+  inputEl.classList.remove('is-invalid');
+  feedbackEl.classList.remove('text-success');
+  feedbackEl.classList.add('text-danger');
+  feedbackEl.textContent = i18nInstance.t(value);
 };
 
 const renderSuccessFeedback = (inputEl, feedbackEl, i18nInstance) => {
