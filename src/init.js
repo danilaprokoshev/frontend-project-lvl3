@@ -87,10 +87,10 @@ export default () => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    switch (error.message) {
-      case 'Error parsing XML':
+    switch (error.isAxiosError) {
+      case false:
         return 'form.validation.invalid_rss';
-      case 'Network Error':
+      case true:
         return 'form.network_error';
       default:
         return 'form.validation.invalid_rss';
