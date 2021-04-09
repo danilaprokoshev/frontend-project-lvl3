@@ -88,10 +88,10 @@ export default () => {
 
   const localizeError = (error) => {
     switch (error.message) {
-      case 'Error parsing XML':
-        return 'form.validation.invalid_rss';
       case 'Network Error':
         return 'form.network_error';
+      case 'Error parsing XML':
+        return 'form.validation.invalid_rss';
       default:
         return null;
     }
@@ -150,7 +150,7 @@ export default () => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        watchedState.processError = localizeError(error) || 'form.network_error';
+        watchedState.processError = localizeError(error) || 'form.validation.invalid_rss';
         watchedState.processState = 'failed';
       });
   });
