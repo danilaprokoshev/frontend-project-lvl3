@@ -7,7 +7,6 @@ class ParserError extends Error {
 
     this.name = 'ParserError';
     this.message = 'Error parsing XML';
-    this.isAxiosError = false;
   }
 }
 
