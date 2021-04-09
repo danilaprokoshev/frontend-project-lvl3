@@ -121,7 +121,6 @@ export default (i18nInstance) => {
     axios.get(proxyUrl(url))
       .then((response) => {
         if (response.status === 200) return response;
-        watchedState.processState = 'failed';
         throw new Error('Network Error');
       })
       .then((response) => {

@@ -109,6 +109,7 @@ export default (state, form, feedbackEl, feedsColumn,
       case 'sending':
         submitButton.setAttribute('disabled', 'true');
         inputEl.setAttribute('readonly', 'readonly');
+        renderProcessError(inputEl, feedbackEl, watchedState.processError, i18nInstance);
         break;
       case 'processed':
         submitButton.removeAttribute('disabled');
