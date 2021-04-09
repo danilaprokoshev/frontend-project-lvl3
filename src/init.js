@@ -87,12 +87,10 @@ export default () => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    switch (error.message) {
-      case 'Network Error':
-        return 'form.network_error';
-      default:
-        return 'form.validation.invalid_rss';
+    if (error.isAxiosError) {
+      return 'form.network_error';
     }
+    return 'form.validation.invalid_rss';
   };
 
   const updatePosts = () => {
@@ -131,10 +129,6 @@ export default () => {
     watchedState.processState = 'sending';
     const url = new URL(urlString);
     axios.get(proxyUrl(url))
-      .then((response) => {
-        if (response.status === 200) return response;
-        throw new Error('Network Error');
-      })
       .then((response) => {
         const { contents } = response.data;
         const feedContent = parseXML(contents);
