@@ -87,13 +87,14 @@ export default () => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    if (error.name === 'ParserError') {
-      return 'form.validation.invalid_rss';
+    switch (error.message) {
+      case 'Error parsing XML':
+        return 'form.validation.invalid_rss';
+      case 'Network Error':
+        return 'form.network_error';
+      default:
+        return 'form.validation.invalid_rss';
     }
-    if (error.isAxiosError) {
-      return 'form.network_error';
-    }
-    return null;
   };
 
   const updatePosts = () => {
@@ -145,7 +146,7 @@ export default () => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        watchedState.processError = localizeError(error) || 'form.validation.invalid_rss';
+        watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
       });
   });
