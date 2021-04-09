@@ -93,7 +93,7 @@ export default () => {
       case 'Network Error':
         return 'form.network_error';
       default:
-        return 'form.validation.invalid_rss';
+        return null;
     }
   };
 
@@ -150,7 +150,7 @@ export default () => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        watchedState.processError = localizeError(error);
+        watchedState.processError = localizeError(error) || 'form.network_error';
         watchedState.processState = 'failed';
       });
   });
