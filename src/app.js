@@ -120,6 +120,10 @@ export default (i18nInstance) => {
     const url = new URL(urlString);
     axios.get(proxyUrl(url))
       .then((response) => {
+        if (response.status === 200) return response;
+        throw new Error('Network Error');
+      })
+      .then((response) => {
         const { contents } = response.data;
         const feedContent = parseXML(contents);
         feedContent.feed.url = url.href;
@@ -132,10 +136,6 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        // console.log(error);
-        // console.log(error.message);
-        // console.log(error.name);
-        // console.log(error.isAxiosError);
         watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
       });
