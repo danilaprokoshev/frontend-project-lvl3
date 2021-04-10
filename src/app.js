@@ -126,6 +126,13 @@ export default (i18nInstance) => {
       .then((response) => {
         const { contents } = response.data;
         const feedContent = parseXML(contents);
+        return feedContent;
+      })
+      .catch((error) => {
+        watchedState.processError = localizeError(error);
+        watchedState.processState = 'failed';
+      })
+      .then((feedContent) => {
         feedContent.feed.url = url.href;
         _.forEachRight(feedContent.posts, (post) => {
           _.set(post, 'dataId', _.uniqueId());
@@ -135,10 +142,6 @@ export default (i18nInstance) => {
         watchedState.processError = null;
         watchedState.processState = 'processed';
         setTimeout(updatePosts, DELAY);
-      })
-      .catch((error) => {
-        watchedState.processError = localizeError(error);
-        watchedState.processState = 'failed';
       });
   });
 };
