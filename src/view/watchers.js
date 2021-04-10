@@ -140,7 +140,6 @@ export default (state, form, feedbackEl, feedsColumn,
   };
 
   const watchedState = onChange(state, (path, value) => {
-    console.log(watchedState);
     switch (path) {
       case 'processState':
         processStateHandler(value, watchedState);

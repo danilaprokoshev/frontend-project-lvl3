@@ -76,9 +76,6 @@ export default (i18nInstance) => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    if (error.isAxiosError) {
-      return 'form.network_error';
-    }
     switch (error.message) {
       case 'Network Error':
         return 'form.network_error';
@@ -143,6 +140,10 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
+        console.log(error);
+        console.log(error.name);
+        console.log(error.message);
+        console.log(error.isAxiosError);
         watchedState.processError = localizeError(error) || 'form.validation.invalid_rss';
         watchedState.processState = 'failed';
       });
