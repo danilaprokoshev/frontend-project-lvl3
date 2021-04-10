@@ -128,10 +128,6 @@ export default (i18nInstance) => {
         const feedContent = parseXML(contents);
         return feedContent;
       })
-      .catch((error) => {
-        watchedState.processError = localizeError(error);
-        watchedState.processState = 'failed';
-      })
       .then((feedContent) => {
         feedContent.feed.url = url.href;
         _.forEachRight(feedContent.posts, (post) => {
@@ -142,6 +138,10 @@ export default (i18nInstance) => {
         watchedState.processError = null;
         watchedState.processState = 'processed';
         setTimeout(updatePosts, DELAY);
+      })
+      .catch((error) => {
+        watchedState.processError = localizeError(error);
+        watchedState.processState = 'failed';
       });
   });
 };
