@@ -76,16 +76,11 @@ export default (i18nInstance) => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    switch (error.message) {
-      case 'Error parsing XML':
-        return 'form.validation.invalid_rss';
-      case 'Network Error':
-        return 'form.network_error';
-      case 'no internet':
-        return 'form.network_error';
-      default:
-        return 'form.validation.invalid_rss';
+    if (error.message === 'Network Error' || error.message === 'no internet') {
+      return 'form.network_error';
     }
+
+    return 'form.validation.invalid_rss';
   };
 
   const updatePosts = () => {
@@ -100,11 +95,6 @@ export default (i18nInstance) => {
       });
       watchedState.posts = newPosts.concat(watchedState.posts);
     }))
-      .catch((error) => {
-        console.log(i18nInstance.t(
-          localizeError(error),
-        ));
-      })
       .finally(() => {
         setTimeout(updatePosts, DELAY);
       });
@@ -121,16 +111,9 @@ export default (i18nInstance) => {
     watchedState.processState = 'sending';
     const url = new URL(urlString);
     axios.get(proxyUrl(url))
-      // .then((response) => {
-      //   if (response.status === 200) return response;
-      //   throw new Error('Network Error');
-      // })
       .then((response) => {
         const { contents } = response.data;
         const feedContent = parseXML(contents);
-        return feedContent;
-      })
-      .then((feedContent) => {
         feedContent.feed.url = url.href;
         _.forEachRight(feedContent.posts, (post) => {
           _.set(post, 'dataId', _.uniqueId());
@@ -142,10 +125,6 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        console.log(error);
-        console.log(error.name);
-        console.log('message', error.message);
-        console.log(error.isAxiosError);
         watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
       });
