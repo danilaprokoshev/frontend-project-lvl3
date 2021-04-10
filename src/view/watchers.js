@@ -13,10 +13,16 @@ const renderFormError = (inputEl, feedbackEl, error) => {
 };
 
 const renderProcessError = (inputEl, feedbackEl, value, i18nInstance) => {
-  inputEl.classList.remove('is-invalid');
-  feedbackEl.classList.remove('text-success');
-  feedbackEl.classList.add('text-danger');
-  feedbackEl.textContent = i18nInstance.t(value);
+  switch (value) {
+    case null:
+      return;
+    default:
+      inputEl.classList.remove('is-invalid');
+      feedbackEl.classList.remove('text-success');
+      feedbackEl.classList.add('text-danger');
+      feedbackEl.textContent = i18nInstance.t(value);
+      break;
+  }
 };
 
 const renderSuccessFeedback = (inputEl, feedbackEl, i18nInstance) => {
@@ -109,7 +115,7 @@ export default (state, form, feedbackEl, feedsColumn,
       case 'sending':
         submitButton.setAttribute('disabled', 'true');
         inputEl.setAttribute('readonly', 'readonly');
-        renderProcessError(inputEl, feedbackEl, watchedState.processError, i18nInstance);
+        // renderProcessError(inputEl, feedbackEl, watchedState.processError, i18nInstance);
         break;
       case 'processed':
         submitButton.removeAttribute('disabled');

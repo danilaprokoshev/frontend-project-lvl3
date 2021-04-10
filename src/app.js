@@ -135,6 +135,7 @@ export default (i18nInstance) => {
         });
         watchedState.feeds.unshift(feedContent.feed);
         watchedState.posts = feedContent.posts.concat(watchedState.posts);
+        watchedState.processError = null;
         watchedState.processState = 'processed';
         setTimeout(updatePosts, DELAY);
       })
