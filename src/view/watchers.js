@@ -155,8 +155,6 @@ export default (state, form, feedbackEl, feedsColumn,
         form.reset();
         break;
       case 'posts':
-        renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
-        break;
       case 'viewedPosts':
         renderPosts(watchedState, postsColumn, postsTitle, postsUlEl, i18nInstance);
         break;

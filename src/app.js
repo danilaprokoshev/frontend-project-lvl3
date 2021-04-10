@@ -75,7 +75,7 @@ export default (i18nInstance) => {
 
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
-  const localizeError = (error) => {
+  const getErrorTranslationKey = (error) => {
     if (error.message === 'Network Error' || error.message === 'no internet') {
       return 'form.network_error';
     }
@@ -125,7 +125,7 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        watchedState.processError = localizeError(error);
+        watchedState.processError = getErrorTranslationKey(error);
         watchedState.processState = 'failed';
       });
   });

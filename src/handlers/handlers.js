@@ -1,11 +1,5 @@
 const getModalPost = (id, watchedState) => watchedState.posts
-  .find((post) => {
-    if (post.dataId === id) {
-      return post;
-    }
-
-    return null;
-  });
+  .find((post) => post.dataId === id ?? null);
 
 export const openModalHandler = (id, watchedState) => {
   watchedState.viewedPosts.add(id);

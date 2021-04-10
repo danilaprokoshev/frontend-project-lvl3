@@ -18,7 +18,6 @@ export default {
         invalid_rss: 'Ресурс не содержит валидный RSS',
       },
       network_error: 'Ошибка сети',
-      unknown_error: 'Неизвестная ошибка',
       success_feedback: 'RSS успешно загружен',
     },
     modal: {
