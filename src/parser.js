@@ -12,7 +12,7 @@ class ParserError extends Error {
 
 export default (xml) => {
   const parser = new DOMParser();
-  const doc = parser.parseFromString(xml, 'text/xml');
+  const doc = parser.parseFromString(xml, 'application/xml');
   if (doc.querySelector('parsererror')) {
     throw new ParserError('Error parsing XML');
   }

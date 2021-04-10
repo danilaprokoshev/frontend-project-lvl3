@@ -76,11 +76,11 @@ export default (i18nInstance) => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    if (error.isAxiosError) {
-      return 'form.network_error';
-    }
     if (error.message === 'Error parsing XML') {
       return 'form.validation.invalid_rss';
+    }
+    if (error.isAxiosError) {
+      return 'form.network_error';
     }
     return 'unknown_error';
     // switch (error.message) {
@@ -126,10 +126,10 @@ export default (i18nInstance) => {
     watchedState.processState = 'sending';
     const url = new URL(urlString);
     axios.get(proxyUrl(url))
-      .then((response) => {
-        if (response.status === 200) return response;
-        throw new Error('Network Error');
-      })
+      // .then((response) => {
+      //   if (response.status === 200) return response;
+      //   throw new Error('Network Error');
+      // })
       .then((response) => {
         const { contents } = response.data;
         const feedContent = parseXML(contents);
@@ -149,7 +149,7 @@ export default (i18nInstance) => {
       .catch((error) => {
         console.log(error);
         console.log(error.name);
-        console.log(error.message);
+        console.log('message', error.message);
         console.log(error.isAxiosError);
         watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
