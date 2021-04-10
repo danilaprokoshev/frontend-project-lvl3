@@ -1,20 +1,8 @@
-class ParserError extends Error {
-  constructor(...params) {
-    super(...params);
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ParserError);
-    }
-
-    this.name = 'ParserError';
-    this.message = 'Error parsing XML';
-  }
-}
-
 export default (xml) => {
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, 'application/xml');
-  if (doc.querySelector('parsererror')) {
-    throw new ParserError('Error parsing XML');
+  if (doc.documentElement.querySelector('parsererror')) {
+    throw new Error('Error parsing XML');
   }
   const title = doc.querySelector('title');
   const description = doc.querySelector('description');
