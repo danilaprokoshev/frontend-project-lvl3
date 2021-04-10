@@ -82,7 +82,7 @@ export default (i18nInstance) => {
       case 'Error parsing XML':
         return 'form.validation.invalid_rss';
       default:
-        return 'form.validation.invalid_rss';
+        return 'form.network_error';
     }
   };
 
