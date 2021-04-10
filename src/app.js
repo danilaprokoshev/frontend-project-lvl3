@@ -76,14 +76,21 @@ export default (i18nInstance) => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const localizeError = (error) => {
-    switch (error.message) {
-      case 'Network Error':
-        return 'form.network_error';
-      case 'Error parsing XML':
-        return 'form.validation.invalid_rss';
-      default:
-        return null;
+    if (error.isAxiosError) {
+      return 'form.network_error';
     }
+    if (error.message === 'Error parsing XML') {
+      return 'form.validation.invalid_rss';
+    }
+    return 'unknown_error';
+    // switch (error.message) {
+    //   case 'Network Error':
+    //     return 'form.network_error';
+    //   case 'Error parsing XML':
+    //     return 'form.validation.invalid_rss';
+    //   default:
+    //     return null;
+    // }
   };
 
   const updatePosts = () => {
@@ -144,7 +151,7 @@ export default (i18nInstance) => {
         console.log(error.name);
         console.log(error.message);
         console.log(error.isAxiosError);
-        watchedState.processError = localizeError(error) || 'form.validation.invalid_rss';
+        watchedState.processError = localizeError(error);
         watchedState.processState = 'failed';
       });
   });
