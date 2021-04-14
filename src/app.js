@@ -73,7 +73,7 @@ export default (i18nInstance) => {
     watchedState.form.error = error;
   };
 
-  const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
+  const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=false&url=${encodeURIComponent(url)}`;
 
   const getLoadingProcessErrorType = (error) => {
     if (error.isParsingError) {
