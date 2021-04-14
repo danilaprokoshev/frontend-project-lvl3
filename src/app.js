@@ -73,10 +73,10 @@ export default (i18nInstance) => {
     watchedState.form.error = error;
   };
 
-  const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=false&url=${encodeURIComponent(url)}`;
+  const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const getLoadingProcessErrorType = (error) => {
-    if (error.isParsingError) {
+    if (error.isParsingError || !error.response) {
       return 'form.validation.invalid_rss';
     }
     if (error.isAxiosError) {
@@ -136,6 +136,7 @@ export default (i18nInstance) => {
       })
       .catch((error) => {
         console.log(error);
+        console.log('response undefined?', !error.response);
         // console.log(error.name);
         console.log(error.message);
         // console.log(error.isParsingError);
