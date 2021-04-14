@@ -122,6 +122,7 @@ export default (i18nInstance) => {
       .catch((error) => {
         console.log(urlString);
         console.log('error from first catch:', error);
+        console.log('error.response from first catch:', error.response);
       })
       .then((response) => {
         console.log('response.data-->', response.data);
