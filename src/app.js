@@ -119,7 +119,7 @@ export default (i18nInstance) => {
     const url = new URL(urlString);
     axios.get(proxyUrl(url))
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         const { contents } = response.data;
         const feedContent = parseXML(contents);
         feedContent.feed.url = url.href;

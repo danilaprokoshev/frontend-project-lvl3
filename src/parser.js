@@ -1,4 +1,5 @@
 export default (xml) => {
+  console.log('xml-->', xml);
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, 'application/xml');
   if (doc.documentElement.querySelector('parsererror')) {
