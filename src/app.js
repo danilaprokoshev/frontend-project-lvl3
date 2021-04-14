@@ -75,12 +75,19 @@ export default (i18nInstance) => {
 
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
-  const getErrorTranslationKey = (error) => {
-    if (error.message === 'Network Error' || error.message === 'no internet') {
+  const getLoadingProcessErrorType = (error) => {
+    if (error.isParsingError) {
+      return 'form.validation.invalid_rss';
+    }
+    if (error.isAxiosError) {
       return 'form.network_error';
     }
-
-    return 'form.validation.invalid_rss';
+    return 'unknown_error';
+    // if (error.message === 'Network Error' || error.message === 'no internet') {
+    //   return 'form.network_error';
+    // }
+    //
+    // return 'form.validation.invalid_rss';
   };
 
   const updatePosts = () => {
@@ -125,7 +132,12 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        watchedState.processError = getErrorTranslationKey(error);
+        console.log(error);
+        console.log(error.name);
+        console.log(error.message);
+        console.log(error.isParsingError);
+        console.log(error.isAxiosError);
+        watchedState.processError = getLoadingProcessErrorType(error);
         watchedState.processState = 'failed';
       });
   });
