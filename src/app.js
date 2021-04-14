@@ -117,6 +117,7 @@ export default (i18nInstance) => {
     }
     watchedState.processState = 'sending';
     const url = new URL(urlString);
+    console.log('feeds before GET -->', watchedState.feeds);
     axios.get(proxyUrl(url))
       .then((response) => {
         console.log('response.data-->', response.data);
@@ -127,6 +128,7 @@ export default (i18nInstance) => {
           _.set(post, 'dataId', _.uniqueId());
         });
         watchedState.feeds.unshift(feedContent.feed);
+        console.log('feeds after GET -->', watchedState.feeds);
         watchedState.posts = feedContent.posts.concat(watchedState.posts);
         watchedState.processError = null;
         watchedState.processState = 'processed';
