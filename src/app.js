@@ -118,7 +118,7 @@ export default (i18nInstance) => {
     watchedState.processState = 'sending';
     const url = new URL(urlString);
     console.log('feeds before GET -->', watchedState.feeds);
-    axios.get(proxyUrl(url))
+    axios.get(proxyUrl(urlString))
       .catch((error) => {
         console.log(url);
         console.log('error from first catch:', error);
