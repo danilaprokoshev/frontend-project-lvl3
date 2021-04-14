@@ -1,8 +1,10 @@
+import _ from 'lodash';
+
 export default (xml) => {
   console.log('xml-->', xml);
   const parser = new DOMParser();
   const doc = parser.parseFromString(xml, 'application/xml');
-  console.log('doc-->', doc);
+  console.log('doc-->', _.isEqual(doc.documentElement, {}));
   console.log('docTagName-->', doc.documentElement.tagName);
   if (doc.documentElement.querySelector('parsererror')) {
     const error = new Error('Error parsing XML');
