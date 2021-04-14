@@ -82,12 +82,7 @@ export default (i18nInstance) => {
     if (error.isAxiosError) {
       return 'form.network_error';
     }
-    return 'unknown_error';
-    // if (error.message === 'Network Error' || error.message === 'no internet') {
-    //   return 'form.network_error';
-    // }
-    //
-    // return 'form.validation.invalid_rss';
+    return 'form.unknown_error';
   };
 
   const updatePosts = () => {
@@ -117,7 +112,6 @@ export default (i18nInstance) => {
     }
     watchedState.processState = 'sending';
     const url = new URL(urlString);
-    console.log(urlString);
     axios.get(proxyUrl(url))
       .then((response) => {
         const { contents } = response.data;
@@ -133,8 +127,6 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        console.log('error', error);
-        console.log('error.message', error.message);
         watchedState.processError = getLoadingProcessErrorType(error);
         watchedState.processState = 'failed';
       });

@@ -5,7 +5,6 @@ export default (xml) => {
     const error = new Error('Error parsing XML');
     error.isParsingError = true;
     throw error;
-    // throw new Error('Error parsing XML');
   }
   const title = doc.querySelector('title');
   const description = doc.querySelector('description');
