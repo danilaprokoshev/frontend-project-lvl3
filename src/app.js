@@ -119,11 +119,6 @@ export default (i18nInstance) => {
     const url = new URL(urlString);
     console.log('feeds before GET -->', watchedState.feeds);
     axios.get(proxyUrl(url))
-      .catch((error) => {
-        console.log(urlString);
-        console.log('error from first catch:', error);
-        console.log('error.response from first catch:', error.response);
-      })
       .then((response) => {
         console.log('response.data-->', response.data);
         const { contents } = response.data;
