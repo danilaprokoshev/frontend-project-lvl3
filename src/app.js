@@ -134,7 +134,7 @@ export default (i18nInstance) => {
       .catch((error) => {
         // console.log(error);
         // console.log(error.name);
-        console.log(error.message);
+        // console.log(error.message);
         // console.log(error.isParsingError);
         // console.log(error.isAxiosError);
         watchedState.processError = getLoadingProcessErrorType(error);
