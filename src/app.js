@@ -76,7 +76,7 @@ export default (i18nInstance) => {
   const proxyUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const getLoadingProcessErrorType = (error) => {
-    if (error.isParsingError || !error.response) {
+    if (error.isParsingError) {
       return 'form.validation.invalid_rss';
     }
     if (error.isAxiosError) {
