@@ -117,10 +117,9 @@ export default (i18nInstance) => {
     }
     watchedState.processState = 'sending';
     const url = new URL(urlString);
-    console.log('feeds before GET -->', watchedState.feeds);
+    console.log(urlString);
     axios.get(proxyUrl(url))
       .then((response) => {
-        console.log('response.data-->', response.data);
         const { contents } = response.data;
         const feedContent = parseXML(contents);
         feedContent.feed.url = url.href;
@@ -128,19 +127,14 @@ export default (i18nInstance) => {
           _.set(post, 'dataId', _.uniqueId());
         });
         watchedState.feeds.unshift(feedContent.feed);
-        console.log('feeds after GET -->', watchedState.feeds);
         watchedState.posts = feedContent.posts.concat(watchedState.posts);
         watchedState.processError = null;
         watchedState.processState = 'processed';
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        console.log(error);
-        console.log('response undefined?', !error.response);
-        // console.log(error.name);
-        console.log(error.message);
-        // console.log(error.isParsingError);
-        // console.log(error.isAxiosError);
+        console.log('error', error);
+        console.log('error.message', error.message);
         watchedState.processError = getLoadingProcessErrorType(error);
         watchedState.processState = 'failed';
       });
