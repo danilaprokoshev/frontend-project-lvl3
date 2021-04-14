@@ -119,6 +119,10 @@ export default (i18nInstance) => {
     const url = new URL(urlString);
     console.log('feeds before GET -->', watchedState.feeds);
     axios.get(proxyUrl(url))
+      .catch((error) => {
+        console.log(url);
+        console.log('error from first catch:', error);
+      })
       .then((response) => {
         console.log('response.data-->', response.data);
         const { contents } = response.data;
@@ -135,7 +139,7 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        // console.log(error);
+        console.log(error);
         // console.log(error.name);
         console.log(error.message);
         // console.log(error.isParsingError);
