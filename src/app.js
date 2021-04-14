@@ -119,6 +119,7 @@ export default (i18nInstance) => {
     const url = new URL(urlString);
     axios.get(proxyUrl(url))
       .then((response) => {
+        console.log(response);
         const { contents } = response.data;
         const feedContent = parseXML(contents);
         feedContent.feed.url = url.href;
@@ -132,11 +133,11 @@ export default (i18nInstance) => {
         setTimeout(updatePosts, DELAY);
       })
       .catch((error) => {
-        console.log(error);
-        console.log(error.name);
+        // console.log(error);
+        // console.log(error.name);
         console.log(error.message);
-        console.log(error.isParsingError);
-        console.log(error.isAxiosError);
+        // console.log(error.isParsingError);
+        // console.log(error.isAxiosError);
         watchedState.processError = getLoadingProcessErrorType(error);
         watchedState.processState = 'failed';
       });
