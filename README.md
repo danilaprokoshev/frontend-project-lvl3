@@ -1,5 +1,4 @@
 # RSS Reader
-### Hexlet tests and linter status:
 [![Actions Status](https://github.com/danilaprokoshev/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/danilaprokoshev/frontend-project-lvl3/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/ce97e885c73e5a50e23c/maintainability)](https://codeclimate.com/github/danilaprokoshev/frontend-project-lvl3/maintainability)
 
